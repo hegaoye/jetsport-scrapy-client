@@ -10,17 +10,25 @@ class SettingDao:
     def __init__(self):
         self.db = Sqlite3Tools()
 
-    def load(self, key_enum):
+    def load(self, key):
         """
         加载设置
-        :param key_enum: 枚举键
+        :param key: 枚举键
         :return:
         """
-        sql = 'select * from setting where key="' + str(key_enum.value) + '"'
+        sql = 'select * from setting where key="' + str(key) + '"'
         result = self.db.load(sql)
         if result:
             return {"key": result[0], "value": result[1]}
         return None
+
+    def loadValue(self, key):
+        """
+        加载一个值
+        :param key:
+        :return:
+        """
+        return self.load(key)["value"]
 
     def update(self, key_enum, value):
         """

@@ -1,14 +1,11 @@
 # coding=utf-8
 import logging.config
-import time
 
 from settings import LOGGIN_CONF
-from src.base.file_tool import FileTool
 from src.base.log4py import logger
-from src.base.xml_path_enum import XMLPath
-from src.service.detect_device import DetectDevice
-from src.service.paysv import PaySV
-from src.service.process import Process
+from src.thread.pull_command_thread import PullCommandThread
+from src.thread.pull_task_thread import PullTaskThread
+from src.thread.push_data_thread import PushDataThread
 
 """
 入口启动文件类
@@ -16,40 +13,19 @@ from src.service.process import Process
 
 
 class Main:
-    def __init__(self):
-        self.pay_sv = PaySV(None)
-        self.file_tool = FileTool()
-
-    def device_list(self):
+    def run(self):
         """
-        设备列表
-        :return: 所有设备列表
+        入口启动多线程开始工作
+        :return:
         """
-        return self.pay_sv.device_list()
+        logger.info("启动 检查命令线程")
+        PullCommandThread().start()
 
-    def run(self, frequency=1, debug=False):
-        logger.info("启动设备上线检测")
-        DetectDevice().start()
+        logger.info("启动 检查任务线程")
+        PullTaskThread().start()
 
-        logger.info("尝试启动上线的设备")
-        while True:
-            device_id = self.pay_sv.load_device()
-            if device_id:
-                self.file_tool.remove(XMLPath.Workspace_PATH.value + str(device_id))
-                self.file_tool.create_folder(XMLPath.Workspace_PATH.value + str(device_id))
-                process_thread = None
-                try:
-                    self.pay_sv.update_device(device_id)
-                    process_thread = Process(str(device_id), frequency, debug)
-                    process_thread.start()
-                    logger.info("启动对设备[" + str(device_id) + "]的控制")
-                    time.sleep(1)
-                except:
-                    log.error("异常退出设备 : " + str(device_id))
-                    if process_thread:
-                        process_thread.stop()
-            else:
-                time.sleep(3)
+        logger.info("启动 推送数据线程")
+        PushDataThread().start()
 
 
 if __name__ == '__main__':
@@ -57,6 +33,6 @@ if __name__ == '__main__':
         logging.config.fileConfig(LOGGIN_CONF)
         log = logging.getLogger(__name__)
         log.info('>>>>> Starting server <<<<<')
-        Main().run(debug=False)
+        Main().run()
     except Exception as e:
         print(e)
