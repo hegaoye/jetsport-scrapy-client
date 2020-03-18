@@ -24,7 +24,7 @@ class SettingDao:
         :param key_enum:键枚举
         :param value:值
         """
-        sql = 'update setting set v="' + str(value) + '"  where key="' + key_enum.value + '"'
+        sql = 'update setting set "value"="' + str(value) + '"  where key="' + key_enum.value + '"'
         self.db.update(sql)
 
     def insert(self, key_enum, value):
@@ -38,6 +38,6 @@ class SettingDao:
         :param order_time: 交易时间
         :return:
         """
-        sql = "insert into setting('key','v') " \
+        sql = "insert into setting('key',v) " \
               "VALUES ('" + str(key_enum.value) + "','" + str(value) + "') "
         self.db.insert(sql)
