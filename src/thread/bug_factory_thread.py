@@ -78,5 +78,6 @@ class BugFactoryThread(threading.Thread, Singleton):
                     elif bug and not bug.is_alive():
                         self.taskPoolDao.updateStateByCode(task.code, TaskPoolStateEnum.Enable.name)
                         dead_bug_list.append(bug_dict)
+
             # 移除 死了的虫子
             self.list.remove(dead_bug_list)
