@@ -18,7 +18,7 @@ class PullTaskThread(threading.Thread):
         self.settingDao = SettingDao()
         self.pullTaskService = PullTaskService()
 
-    def run(self):
+    def run(self) -> None:
         """
         进行任务检测每N分钟执行一次
         :return:

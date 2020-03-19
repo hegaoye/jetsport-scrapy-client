@@ -13,3 +13,6 @@ from src.base.log4py import logger
 class BugThread(threading.Thread):
     def __init__(self):
         pass
+
+    def run(self):
+        pass

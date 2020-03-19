@@ -1,5 +1,6 @@
 # coding=utf-8
 from src.base.databasetools import Sqlite3Tools
+from src.entity.setting import Setting
 
 
 class SettingDao:
@@ -16,19 +17,15 @@ class SettingDao:
         :param key: 枚举键
         :return:
         """
-        sql = 'select * from setting where key="' + str(key) + '"'
-        result = self.db.load(sql)
-        if result:
-            return {"key": result[0], "value": result[1]}
-        return None
+        return Setting.get(Setting.key == key)
 
     def loadValue(self, key):
         """
         加载一个值
-        :param key:
+        :param key: 主键
         :return:
         """
-        return self.load(key)["value"]
+        return self.load(key).value
 
     def update(self, key_enum, value):
         """
