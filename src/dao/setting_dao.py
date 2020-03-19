@@ -1,12 +1,12 @@
 # coding=utf-8
 from src.base.databasetools import Sqlite3Tools
 
-"""
-设置 dao层
-"""
-
 
 class SettingDao:
+    """
+    设置 dao层
+    """
+
     def __init__(self):
         self.db = Sqlite3Tools()
 

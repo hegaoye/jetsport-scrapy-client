@@ -1,13 +1,11 @@
 # coding=utf-8
-
 from src.entity.task_pool import TaskPool
-
-"""
-任务池dao
-"""
 
 
 class TaskPoolDao:
+    """
+    任务池dao
+    """
 
     def insert(self, taskPool):
         """

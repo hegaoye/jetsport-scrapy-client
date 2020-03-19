@@ -1,3 +1,4 @@
+# coding=utf-8
 from src.base import http
 from src.base.enum.setting_key_enum import SettingKeyEnum
 from src.dao.setting_dao import SettingDao

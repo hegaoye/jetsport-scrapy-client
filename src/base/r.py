@@ -1,12 +1,12 @@
 # coding=utf-8
 import json
 
-"""
-return a json object like {"code":"0000","success":True,"info":"failed!","data":"{....}"}
-"""
-
 
 class R:
+    """
+    return a json object like {"code":"0000","success":True,"info":"failed!","data":"{....}"}
+    """
+
     def __init__(self, code="0000", success=False, info="failed", data=None):
         self.code = code
         self.success = success
