@@ -7,7 +7,7 @@ class SettingDao:
     设置 dao层
     """
 
-    def load(self, key):
+    def load(self, key) -> Setting:
         """
         加载设置
         :param key: 枚举键
@@ -23,7 +23,7 @@ class SettingDao:
         """
         return self.load(key).value
 
-    def insert(self, key, value):
+    def insert(self, key, value) -> None:
         """
         插入一条设置
         :param key_enum: key枚举

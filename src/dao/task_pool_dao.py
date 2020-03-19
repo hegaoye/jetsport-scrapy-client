@@ -7,7 +7,15 @@ class TaskPoolDao:
     任务池dao
     """
 
-    def insert(self, taskPool):
+    def load(self, state) -> TaskPool:
+        """
+        根据状态加载一个任务
+        :param state:
+        :return:
+        """
+        return TaskPool.get(TaskPool.state == state)
+
+    def insert(self, taskPool) -> None:
         """
          保存任务到任务池中
         :param taskPool: 任务池数据
