@@ -1,6 +1,5 @@
 # coding=utf-8
-
-from src.base.databasetools import Sqlite3Tools
+from src.entity.commands import Commands
 
 
 class CommandsDao:
@@ -8,5 +7,12 @@ class CommandsDao:
     指令dao
     """
 
-    def __init__(self):
-        self.db = Sqlite3Tools()
+    def load(self, state) -> Commands:
+        return Commands.get(Commands.state == state)
+
+    def insert(self, command) -> None:
+        Commands.create(code=command.code, command=command.command, type=command.type, order=command.order,
+                        state=command.state)
+
+    def update(self, code, state):
+        Commands.update(state=state).where(Commands.code == code).execute()
