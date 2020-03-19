@@ -1,6 +1,5 @@
 # coding=utf-8
-
-from src.base.databasetools import Sqlite3Tools
+from src.entity.data_cache import DataCache
 
 
 class DataCacheDao:
@@ -8,5 +7,24 @@ class DataCacheDao:
     数据缓存dao
     """
 
-    def __init__(self):
-        self.db = Sqlite3Tools()
+    def list(self) -> list:
+        """
+        查询数据的集合
+        :return: list
+        """
+        return DataCache.select()
+
+    def insert(self, dataCache) -> None:
+        """
+        插入一条数据
+        :param dataCache: 数据
+        """
+        DataCache.create(code=dataCache.code, data=dataCache.data, crawling_rule_code=dataCache.crawling_rule_code)
+
+    def delete(self, list) -> None:
+        """
+        删除已经同步的数据
+        :param list: code 集合
+        :return:
+        """
+        DataCache.delete().where(DataCache.code in list)
