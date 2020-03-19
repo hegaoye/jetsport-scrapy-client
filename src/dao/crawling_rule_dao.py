@@ -1,6 +1,5 @@
 # coding=utf-8
-
-from src.base.databasetools import Sqlite3Tools
+from src.entity.crawling_rule import CrawlingRule
 
 
 class CrawlingRuleDao:
@@ -8,5 +7,13 @@ class CrawlingRuleDao:
     爬取规则Dao
     """
 
-    def __init__(self):
-        self.db = Sqlite3Tools()
+    def insert(self, crawlingRule) -> None:
+        CrawlingRule.create()
+
+    def load(self, code) -> CrawlingRule:
+        """
+        加载一个
+        :param code:
+        :return:
+        """
+        return CrawlingRule.get(CrawlingRule.code == code)
