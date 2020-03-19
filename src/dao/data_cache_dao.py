@@ -27,4 +27,12 @@ class DataCacheDao:
         :param list: code 集合
         :return:
         """
-        DataCache.delete().where(DataCache.code in list)
+        DataCache.delete().where(DataCache.code in list).execute()
+
+
+if __name__ == '__main__':
+    l = DataCacheDao().list()
+    for i in l:
+        print(i.code, i.data, i.crawling_rule_code)
+
+    DataCacheDao().delete([1, 2])
