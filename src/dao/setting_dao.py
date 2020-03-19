@@ -1,4 +1,5 @@
 # coding=utf-8
+
 from src.entity.setting import Setting
 
 
