@@ -12,7 +12,7 @@ class CrawlingRuleDao:
 
     def load(self, code) -> CrawlingRule:
         """
-        加载一个
+        加载一条爬虫规则
         :param code:
         :return:
         """
