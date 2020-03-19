@@ -1,8 +1,9 @@
 # coding=utf-8
+from src.base.singleton import Singleton
 from src.entity.crawling_rule import CrawlingRule
 
 
-class CrawlingRuleDao:
+class CrawlingRuleDao(Singleton):
     """
     爬取规则Dao
     """

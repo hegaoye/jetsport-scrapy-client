@@ -1,8 +1,9 @@
 # coding=utf-8
+from src.base.singleton import Singleton
 from src.entity.task_pool import TaskPool
 
 
-class TaskPoolDao:
+class TaskPoolDao(Singleton):
     """
     任务池dao
     """
@@ -13,7 +14,15 @@ class TaskPoolDao:
         :param state:
         :return:
         """
-        return TaskPool.get(TaskPool.state == state)
+        return TaskPool.select().where(TaskPool.state == state).order_by(TaskPool.ordinal.asc())
+
+    def updateStateByCode(self, code, state):
+        """
+        根据code 更新 状态
+        :param code:  code 编码
+        :param state:  具体状态
+        """
+        TaskPool.update(state=state).where(TaskPool.code == code).execute()
 
     def insert(self, taskPool) -> None:
         """

@@ -3,6 +3,7 @@ import logging.config
 
 from settings import LOGGIN_CONF
 from src.base.log4py import logger
+from src.thread.bug_factory_thread import BugFactoryThread
 from src.thread.pull_command_thread import PullCommandThread
 from src.thread.pull_task_thread import PullTaskThread
 from src.thread.push_data_thread import PushDataThread
@@ -23,6 +24,9 @@ class Main:
 
         logger.info("启动 检查任务线程")
         PullTaskThread().start()
+
+        logger.info("启动 虫子制造工厂")
+        BugFactoryThread().start()
 
         logger.info("启动 推送数据线程")
         PushDataThread().start()

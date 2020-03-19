@@ -28,3 +28,8 @@ class SettingKeyEnum(Enum):
     拉取任务的地址
     """
     PullTaskUrl = "PullTaskUrl"
+
+    """
+    工厂生产频率
+    """
+    FactoryProduceFrequce="FactoryProduceFrequce"

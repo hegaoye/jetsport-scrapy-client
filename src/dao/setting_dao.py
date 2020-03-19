@@ -1,9 +1,9 @@
 # coding=utf-8
-
+from src.base.singleton import Singleton
 from src.entity.setting import Setting
 
 
-class SettingDao:
+class SettingDao(Singleton):
     """
     设置 dao层
     """
