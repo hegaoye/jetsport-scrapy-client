@@ -10,21 +10,25 @@ from src.dao.setting_dao import SettingDao
 from src.dao.task_pool_dao import TaskPoolDao
 from src.thread.bug_thread import BugThread
 
-"""
-虫子工厂，用于检测新的任务，并创建新的虫子出来，执行任务规则
-"""
-
 
 class BugFactoryThread(threading.Thread, Singleton):
+    """
+    虫子工厂，用于检测新的任务，并创建新的虫子出来，执行任务规则
+    """
+
     def __init__(self):
         self.taskPoolDao = TaskPoolDao()
         self.crawlingRuleDao = CrawlingRuleDao()
         self.settingDao = SettingDao()
+        self.list = []
 
     def run(self):
-        pass
+        """
+        启动工厂
+        """
+        self.__factory()
 
-    def factory(self) -> None:
+    def __factory(self) -> None:
         """
         生产虫子的工厂方法
         1.获取任务池中待分配的任务
@@ -41,10 +45,38 @@ class BugFactoryThread(threading.Thread, Singleton):
 
                 crawlingRule = self.crawlingRuleDao.load(taskPool.crawling_rule_code)
                 if crawlingRule:
-                    # 2.分配任务给虫子进行工作
-                    BugThread(crawlingRule).start()
+                    # 2.分配任务给虫子进行工作 todo 增加爬虫存活率检测，应将虫子放到集合中，并判断状态
+                    bug = BugThread(crawlingRule)
+                    bug.start()
+
+                    bug_dict = {taskPool.code: bug}
+                    self.list.append(bug_dict)
 
                     # 3.修改任务为工作中状态
                     self.taskPoolDao.updateStateByCode(taskPool.code, TaskPoolStateEnum.Working.name)
-            else:
-                time.sleep(factoryProduceFrequce)
+
+            time.sleep(factoryProduceFrequce)
+
+            # 检查虫子是否还活着
+            self.__check_alive_bugs()
+
+    def __check_alive_bugs(self):
+        """
+        检查虫子是否还活着，如果死了就将任务重新打开交给新的虫子
+        1.查询所有的任务池
+        2.遍历生产的虫子集合，判断虫子状态
+        3.移除死了的虫子
+        """
+        task_list = self.taskPoolDao.listByState(TaskPoolStateEnum.Working.name)
+        if task_list.__sizeof__() > 0 and self.list.__sizeof__() > 0:
+            dead_bug_list = []
+            for task in task_list:
+                for bug_dict in self.list:
+                    bug = bug_dict[task.code]
+                    if not bug:
+                        self.taskPoolDao.updateStateByCode(task.code, TaskPoolStateEnum.Enable.name)
+                    elif bug and not bug.is_alive():
+                        self.taskPoolDao.updateStateByCode(task.code, TaskPoolStateEnum.Enable.name)
+                        dead_bug_list.append(bug_dict)
+            # 移除 死了的虫子
+            self.list.remove(dead_bug_list)

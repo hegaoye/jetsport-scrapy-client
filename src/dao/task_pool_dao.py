@@ -16,6 +16,14 @@ class TaskPoolDao(Singleton):
         """
         return TaskPool.select().where(TaskPool.state == state).order_by(TaskPool.ordinal.asc())
 
+    def listByState(self, state) -> list:
+        """
+        根据状态查询任务的集合
+        :param state: 状态
+        :return: list
+        """
+        return TaskPool.select().where(TaskPool.state == state)
+
     def updateStateByCode(self, code, state):
         """
         根据code 更新 状态

@@ -7,12 +7,12 @@ from selenium.webdriver.support.ui import WebDriverWait
 
 from src.base.browser import Browser
 
-"""
-虫子，用于爬取数据的爬虫，多线程实现可以多线程并行多个规则，
-"""
-
 
 class BugThread(threading.Thread):
+    """
+    虫子，用于爬取数据的爬虫，多线程实现可以多线程并行多个规则，
+    """
+
     def __init__(self, crawlingRule):
         self.browser = Browser().get_brower()
         self.crawlingRule = crawlingRule
@@ -25,6 +25,7 @@ class BugThread(threading.Thread):
             # 爬取网页数据
             self._crawling()
         except:
+            # todo 增加异常判断，规则判断
             self._stop()
 
     def _crawling(self):
