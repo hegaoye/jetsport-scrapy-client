@@ -23,7 +23,7 @@ class CommandsDao:
         Commands.create(code=command.code, command=command.command, type=command.type, order=command.order,
                         state=command.state)
 
-    def updateStateByCode(self, code, state) -> None:
+    def update_state_by_code(self, code, state) -> None:
         """
         根据code 更新指令状态
         :param code: 编码

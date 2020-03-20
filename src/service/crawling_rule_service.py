@@ -17,4 +17,4 @@ class CrawlingRuleService(BaseService):
         :param code: 编码
         :return: CrawlingRule
         """
-        return self.crawlingRuleDao.loadByCode(code)
+        return self.crawlingRuleDao.load_by_code(code)

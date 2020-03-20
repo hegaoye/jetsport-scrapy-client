@@ -35,7 +35,7 @@ class DataCacheService(BaseService):
         data_cache_code_list = []
         if list and list.__sizeof__() > 0:
             for data_cache in list:
-                crawling_rule = self.crawlingRuleDao.loadByCode(data_cache.crawling_rule_code)
+                crawling_rule = self.crawlingRuleDao.load_by_code(data_cache.crawling_rule_code)
 
                 # 2.推送数据整合
                 if crawling_rule:

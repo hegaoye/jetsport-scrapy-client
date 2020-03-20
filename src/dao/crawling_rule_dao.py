@@ -23,7 +23,7 @@ class CrawlingRuleDao(Singleton):
                             access_url=crawlingRule.access_url, target_code=crawlingRule.target_code,
                             pre_code=crawlingRule.pre_code, api_url=crawlingRule.api_url)
 
-    def insertBatch(self, list):
+    def insert_batch(self, list):
         """
         批量插入 爬取规则
         :param list: 规则集合
@@ -31,7 +31,7 @@ class CrawlingRuleDao(Singleton):
         for crawlingRule in list:
             self.insert(crawlingRule)
 
-    def loadByCode(self, code) -> CrawlingRule:
+    def load_by_code(self, code) -> CrawlingRule:
         """
         加载一条爬虫规则
         :param code: 编码
