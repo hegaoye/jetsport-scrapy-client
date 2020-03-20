@@ -31,7 +31,7 @@ class CrawlingRuleDao(Singleton):
         for crawlingRule in list:
             self.insert(crawlingRule)
 
-    def load(self, code) -> CrawlingRule:
+    def loadByCode(self, code) -> CrawlingRule:
         """
         加载一条爬虫规则
         :param code: 编码

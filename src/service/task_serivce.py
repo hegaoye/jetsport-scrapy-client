@@ -1,7 +1,6 @@
 # coding=utf-8
 from src.base import http
 from src.base.enum.setting_key_enum import SettingKeyEnum
-from src.dao.setting_dao import SettingDao
 from src.dao.task_pool_dao import TaskPoolDao
 from src.entity.task_pool import TaskPool
 from src.service.base_service import BaseService
@@ -15,6 +14,30 @@ class TaskService(BaseService):
     def __init__(self):
         # 获取设置类，获取拉取地址和host等
         self.taskPoolDao = TaskPoolDao()
+
+    def load(self, state) -> TaskPool:
+        """
+        根据状态加载一个任务
+        :param state: 状态机
+        :return: TaskPool
+        """
+        return self.taskPoolDao.load(state)
+
+    def updateStateByCode(self, code, state):
+        """
+        根据code 更新 状态
+        :param code:  code 编码
+        :param state:  具体状态
+        """
+        self.taskPoolDao.updateStateByCode(code, state)
+
+    def listByState(self, state) -> list:
+        """
+        根据状态查询任务的集合
+        :param state: 状态
+        :return: list
+        """
+        return self.taskPoolDao.listByState(state)
 
     def pull(self):
         """
