@@ -12,7 +12,7 @@ from src.thread.bug_thread import BugThread
 
 class BugFactoryThread(BaseTread, Singleton):
     """
-    虫子工厂，用于检测新的任务，并创建新的虫子出来，执行任务规则
+    虫子工厂，用于检测新的任务，并创建新的虫子出来，执行任务规则 （仅允许有一个工厂）
     """
 
     def __init__(self):
