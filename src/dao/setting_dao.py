@@ -16,7 +16,7 @@ class SettingDao(Singleton):
         """
         return Setting.get(Setting.key == key)
 
-    def loadValue(self, key):
+    def load_value(self, key):
         """
         加载一个值
         :param key: 主键

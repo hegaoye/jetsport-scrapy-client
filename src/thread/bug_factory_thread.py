@@ -34,13 +34,13 @@ class BugFactoryThread(BaseTread, Singleton):
         3.修改任务为工作中状态
         """
         # 工厂制造频率
-        factoryProduceFrequce = int(self.settingService.loadValue(SettingKeyEnum.FactoryProduceFrequce))
+        factoryProduceFrequce = int(self.settingService.load_value(SettingKeyEnum.FactoryProduceFrequce))
 
         while True:
             # 1.获取任务池中待分配的任务
             taskPool = self.taskService.load(TaskPoolStateEnum.Enable.name)
             if taskPool:
-                crawlingRule = self.crawlingRuleService.loadByCode(taskPool.crawling_rule_code)
+                crawlingRule = self.crawlingRuleService.load_by_code(taskPool.crawling_rule_code)
                 if crawlingRule:
                     # 2.分配任务给虫子进行工作 todo 增加爬虫存活率检测，应将虫子放到集合中，并判断状态
                     bug = BugThread(crawlingRule)
@@ -51,7 +51,7 @@ class BugFactoryThread(BaseTread, Singleton):
                     self.list.append(bug_dict)
 
                     # 3.修改任务为工作中状态
-                    self.taskService.updateStateByCode(taskPool.code, TaskPoolStateEnum.Working.name)
+                    self.taskService.update_state_by_code(taskPool.code, TaskPoolStateEnum.Working.name)
 
             time.sleep(factoryProduceFrequce)
 
@@ -65,16 +65,16 @@ class BugFactoryThread(BaseTread, Singleton):
         2.遍历生产的虫子集合，判断虫子状态
         3.移除死了的虫子
         """
-        task_list = self.taskService.listByState(TaskPoolStateEnum.Working.name)
+        task_list = self.taskService.list_by_state(TaskPoolStateEnum.Working.name)
         if task_list.__sizeof__() > 0 and self.list.__sizeof__() > 0:
             dead_bug_list = []
             for task in task_list:
                 for bug_dict in self.list:
                     bug = bug_dict[task.code]
                     if not bug:
-                        self.taskService.updateStateByCode(task.code, TaskPoolStateEnum.Enable.name)
+                        self.taskService.update_state_by_code(task.code, TaskPoolStateEnum.Enable.name)
                     elif bug and not bug.is_alive():
-                        self.taskService.updateStateByCode(task.code, TaskPoolStateEnum.Enable.name)
+                        self.taskService.update_state_by_code(task.code, TaskPoolStateEnum.Enable.name)
                         dead_bug_list.append(bug_dict)
 
             # 移除 死了的虫子

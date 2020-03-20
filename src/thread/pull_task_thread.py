@@ -20,7 +20,7 @@ class PullTaskThread(BaseTread):
         进行任务检测每N分钟执行一次
         :return:
         """
-        pullTaskFrequceSecond = int(self.settingService.loadValue(SettingKeyEnum.PullTaskFrequce.name))
+        pullTaskFrequceSecond = int(self.settingService.load_value(SettingKeyEnum.PullTaskFrequce.name))
         while True:
             try:
                 # 拉取任务

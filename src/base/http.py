@@ -9,7 +9,7 @@ from src.dao.setting_dao import SettingDao
 
 def get(url):
     setting_dao = SettingDao()
-    host = setting_dao.loadValue(Command.Host)
+    host = setting_dao.load_value(Command.Host)
     url = host + url
     logger.debug("请求url: " + url)
     response = request.urlopen(url)
@@ -24,7 +24,7 @@ def post(url, data=None, headers=None):
     try:
         logger.info(url)
         setting_dao = SettingDao()
-        host = setting_dao.loadValue(Command.Host.name)
+        host = setting_dao.load_value(Command.Host.name)
         url = host + url
         postdata = parse.urlencode(data).encode('utf-8')
         logger.info("请求url: " + url)

@@ -17,7 +17,7 @@ class PullCommandThread(BaseTread, Singleton):
         self.commandsService = CommandsService()
 
     def run(self) -> None:
-        pullCommandFrequce = int(self.settingService.loadValue(SettingKeyEnum.PullCommandFrequce.name))
+        pullCommandFrequce = int(self.settingService.load_value(SettingKeyEnum.PullCommandFrequce.name))
         while True:
             try:
                 flag = self.pull_commands()
@@ -36,7 +36,7 @@ class PullCommandThread(BaseTread, Singleton):
         2.存储指令到数据库中
         :return: True/False
         """
-        url = self.settingService.loadValue(SettingKeyEnum.PullCommandUrl.name)
+        url = self.settingService.load_value(SettingKeyEnum.PullCommandUrl.name)
         r = http.get(url)
         if r.success:
             try:

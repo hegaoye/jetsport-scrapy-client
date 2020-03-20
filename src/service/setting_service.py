@@ -2,13 +2,13 @@ from src.service.base_service import BaseService
 
 
 class SettingService(BaseService):
-    def loadValue(self, key):
+    def load_value(self, key):
         """
         加载一个值
         :param key: 主键
         :return: 值
         """
-        return self.settingDao.loadValue(key)
+        return self.settingDao.load_value(key)
 
     def save(self, key, value) -> None:
         """

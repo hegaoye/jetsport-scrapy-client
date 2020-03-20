@@ -15,7 +15,7 @@ class PushDataThread(BaseTread):
         self.dataCacheService = DataCacheService()
 
     def run(self) -> None:
-        push_data_cache_frequce = self.settingService.loadValue(SettingKeyEnum.PushDataCacheFrequce.name)
+        push_data_cache_frequce = self.settingService.load_value(SettingKeyEnum.PushDataCacheFrequce.name)
         while True:
             self.__push()
             sleep(push_data_cache_frequce)

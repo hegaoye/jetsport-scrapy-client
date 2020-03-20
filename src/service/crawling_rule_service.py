@@ -11,7 +11,7 @@ class CrawlingRuleService(BaseService):
     def __init__(self):
         self.crawlingRuleDao = CrawlingRuleDao()
 
-    def loadByCode(self, code) -> CrawlingRule:
+    def load_by_code(self, code) -> CrawlingRule:
         """
         加载一条爬虫规则
         :param code: 编码

@@ -23,21 +23,21 @@ class TaskService(BaseService):
         """
         return self.taskPoolDao.load(state)
 
-    def updateStateByCode(self, code, state):
+    def update_state_by_code(self, code, state):
         """
         根据code 更新 状态
         :param code:  code 编码
         :param state:  具体状态
         """
-        self.taskPoolDao.updateStateByCode(code, state)
+        self.taskPoolDao.update_state_by_code(code, state)
 
-    def listByState(self, state) -> list:
+    def list_by_state(self, state) -> list:
         """
         根据状态查询任务的集合
         :param state: 状态
         :return: list
         """
-        return self.taskPoolDao.listByState(state)
+        return self.taskPoolDao.list_by_state(state)
 
     def pull(self) -> bool:
         """
@@ -48,7 +48,7 @@ class TaskService(BaseService):
         :return: True/False
         """
         # 1.获取拉取任务的请求地址
-        pull_task_url = self.settingDao.loadValue(SettingKeyEnum.PullTaskUrl.name)
+        pull_task_url = self.settingDao.load_value(SettingKeyEnum.PullTaskUrl.name)
 
         # 2.拉取任务
         r = http.get(pull_task_url)

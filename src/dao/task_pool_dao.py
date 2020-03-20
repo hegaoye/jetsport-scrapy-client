@@ -16,7 +16,7 @@ class TaskPoolDao(Singleton):
         """
         return TaskPool.select().where(TaskPool.state == state).order_by(TaskPool.ordinal.asc())
 
-    def loadByCrawlingRuleCode(self, crawling_rule_code) -> TaskPool:
+    def load_by_crawling_rule_code(self, crawling_rule_code) -> TaskPool:
         """
         根据 爬取规则编码查询任务
         :param crawling_rule_code: 爬虫规则编码
@@ -24,7 +24,7 @@ class TaskPoolDao(Singleton):
         """
         return TaskPool.get(TaskPool.crawling_rule_code == crawling_rule_code)
 
-    def listByState(self, state) -> list:
+    def list_by_state(self, state) -> list:
         """
         根据状态查询任务的集合
         :param state: 状态
@@ -32,7 +32,7 @@ class TaskPoolDao(Singleton):
         """
         return TaskPool.select().where(TaskPool.state == state)
 
-    def updateStateByCode(self, code, state):
+    def update_state_by_code(self, code, state):
         """
         根据code 更新 状态
         :param code:  code 编码

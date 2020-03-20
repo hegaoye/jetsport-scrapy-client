@@ -40,7 +40,7 @@ class DataCacheService(BaseService):
                 # 2.推送数据整合
                 if crawling_rule:
                     url = crawling_rule.api_url
-                    task_pool = self.taskPoolDao.loadByCrawlingRuleCode(crawling_rule.code)
+                    task_pool = self.taskPoolDao.load_by_crawling_rule_code(crawling_rule.code)
 
                     # 构造数据接口
                     data = {
