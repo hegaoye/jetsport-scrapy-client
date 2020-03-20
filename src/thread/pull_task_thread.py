@@ -1,21 +1,19 @@
 # coding=utf-8
-import threading
 import time
 
 from src.base.enum.setting_key_enum import SettingKeyEnum
 from src.base.log4py import logger
 from src.dao.setting_dao import SettingDao
 from src.service.task_serivce import TaskService
+from src.thread.base_thread import BaseTread
 
 """
 用于检测服务器端分发新任务
 """
 
 
-class PullTaskThread(threading.Thread):
+class PullTaskThread(BaseTread):
     def __init__(self):
-        threading.Thread.__init__(self)
-        self.settingDao = SettingDao()
         self.pullTaskService = TaskService()
 
     def run(self) -> None:
@@ -23,7 +21,7 @@ class PullTaskThread(threading.Thread):
         进行任务检测每N分钟执行一次
         :return:
         """
-        pullTaskFrequceSecond = int(self.settingDao.loadValue(SettingKeyEnum.PullTaskFrequce.name))
+        pullTaskFrequceSecond = int(self.settingService.loadValue(SettingKeyEnum.PullTaskFrequce.name))
         while True:
             try:
                 # 拉取任务

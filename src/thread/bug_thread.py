@@ -6,9 +6,10 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 
 from src.base.browser import Browser
+from src.thread.base_thread import BaseTread
 
 
-class BugThread(threading.Thread):
+class BugThread(BaseTread):
     """
     虫子，用于爬取数据的爬虫，多线程实现可以多线程并行多个规则，
     """

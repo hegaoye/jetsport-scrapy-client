@@ -1,17 +1,16 @@
 # coding=utf-8
-import threading
 import time
 
 from src.base.enum.setting_key_enum import SettingKeyEnum
 from src.base.enum.task_pool_state_enum import TaskPoolStateEnum
 from src.base.singleton import Singleton
 from src.dao.crawling_rule_dao import CrawlingRuleDao
-from src.dao.setting_dao import SettingDao
 from src.dao.task_pool_dao import TaskPoolDao
+from src.thread.base_thread import BaseTread
 from src.thread.bug_thread import BugThread
 
 
-class BugFactoryThread(threading.Thread, Singleton):
+class BugFactoryThread(BaseTread, Singleton):
     """
     虫子工厂，用于检测新的任务，并创建新的虫子出来，执行任务规则
     """
@@ -19,7 +18,6 @@ class BugFactoryThread(threading.Thread, Singleton):
     def __init__(self):
         self.taskPoolDao = TaskPoolDao()
         self.crawlingRuleDao = CrawlingRuleDao()
-        self.settingDao = SettingDao()
         self.list = []
 
     def run(self):
