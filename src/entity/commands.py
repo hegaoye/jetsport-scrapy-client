@@ -12,7 +12,3 @@ class Commands(BaseModel):
     type = CharField()
     order = IntegerField()
     state = CharField()
-
-    class Meta:
-        order_by = ('code',)
-        db_table = 'commands'

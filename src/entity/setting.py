@@ -9,7 +9,3 @@ class Setting(BaseModel):
     """
     key = PrimaryKeyField()
     value = CharField()
-
-    class Meta:
-        order_by = ('key',)
-        db_table = 'setting'
