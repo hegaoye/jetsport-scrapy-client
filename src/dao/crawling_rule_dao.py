@@ -11,8 +11,7 @@ class CrawlingRuleDao(Singleton):
     def insert(self, crawlingRule) -> None:
         """
         插入一条爬虫规则
-        :param crawlingRule:
-        :return:
+        :param crawlingRule: 爬取规则
         """
         CrawlingRule.create(code=crawlingRule.code, api_code=crawlingRule.api_code,
                             get_value_method=crawlingRule.get_value_method, api_field=crawlingRule.api_field,
@@ -23,6 +22,14 @@ class CrawlingRuleDao(Singleton):
                             sub_label_class=crawlingRule.sub_label_class, opt=crawlingRule.opt,
                             access_url=crawlingRule.access_url, target_code=crawlingRule.target_code,
                             pre_code=crawlingRule.pre_code, api_url=crawlingRule.api_url)
+
+    def insertBatch(self, list):
+        """
+        批量插入 爬取规则
+        :param list: 规则集合
+        """
+        for crawlingRule in list:
+            self.insert(crawlingRule)
 
     def load(self, code) -> CrawlingRule:
         """
