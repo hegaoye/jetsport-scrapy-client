@@ -1,5 +1,4 @@
 import threading
-from typing import Optional
 
 from src.service.setting_service import SettingService
 
@@ -15,4 +14,3 @@ class BaseTread(threading.Thread):
 
     def stop(self):
         self.join()
-

@@ -7,10 +7,6 @@ from src.base.singleton import Singleton
 from src.service.commands_service import CommandsService
 from src.thread.base_thread import BaseTread
 
-"""
-仅用于 拉取服务器端的控制命令检测
-"""
-
 
 class PullCommandThread(BaseTread, Singleton):
     """
