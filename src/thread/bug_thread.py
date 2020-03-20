@@ -1,5 +1,4 @@
 # coding=utf-8
-import threading
 
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
