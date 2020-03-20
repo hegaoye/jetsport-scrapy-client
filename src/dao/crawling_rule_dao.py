@@ -34,7 +34,7 @@ class CrawlingRuleDao(Singleton):
     def load(self, code) -> CrawlingRule:
         """
         加载一条爬虫规则
-        :param code:
-        :return:
+        :param code: 编码
+        :return: CrawlingRule
         """
         return CrawlingRule.get(CrawlingRule.code == code)
