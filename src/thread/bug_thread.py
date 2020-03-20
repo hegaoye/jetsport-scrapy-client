@@ -26,7 +26,7 @@ class BugThread(BaseTread):
             self._crawling()
         except:
             # todo 增加异常判断，规则判断
-            self._stop()
+            self.stop()
 
     def _crawling(self):
         """
