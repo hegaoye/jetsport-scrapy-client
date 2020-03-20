@@ -1,3 +1,4 @@
+# coding=utf-8
 from peewee import PrimaryKeyField, CharField, IntegerField
 
 from src.entity.base_model import BaseModel
