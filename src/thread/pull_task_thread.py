@@ -5,7 +5,7 @@ import time
 from src.base.enum.setting_key_enum import SettingKeyEnum
 from src.base.log4py import logger
 from src.dao.setting_dao import SettingDao
-from src.service.pull_task_serivce import PullTaskService
+from src.service.task_serivce import TaskService
 
 """
 用于检测服务器端分发新任务
@@ -16,7 +16,7 @@ class PullTaskThread(threading.Thread):
     def __init__(self):
         threading.Thread.__init__(self)
         self.settingDao = SettingDao()
-        self.pullTaskService = PullTaskService()
+        self.pullTaskService = TaskService()
 
     def run(self) -> None:
         """

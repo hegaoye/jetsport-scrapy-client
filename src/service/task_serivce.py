@@ -1,16 +1,17 @@
 # coding=utf-8
 from src.base import http
 from src.base.enum.setting_key_enum import SettingKeyEnum
+from src.base.singleton import Singleton
 from src.dao.setting_dao import SettingDao
 from src.dao.task_pool_dao import TaskPoolDao
 from src.entity.task_pool import TaskPool
 
-"""
-拉取任务检测接口
-"""
 
+class TaskService(Singleton):
+    """
+    拉取任务检测接口
+    """
 
-class PullTaskService:
     def __init__(self):
         # 获取设置类，获取拉取地址和host等
         self.settingDao = SettingDao()
@@ -36,3 +37,6 @@ class PullTaskService:
             taskPool = TaskPool()
             # todo 获取数据进行保存
             self.taskPoolDao.insert(taskPool)
+
+    def push(self):
+        pass
