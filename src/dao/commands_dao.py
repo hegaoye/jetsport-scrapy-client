@@ -30,3 +30,12 @@ class CommandsDao:
         :param state: 状态
         """
         Commands.update(state=state).where(Commands.code == code).execute()
+
+    def delete(self, code) -> int:
+        """
+        删除数据
+        :param code: 编码
+        :return: int
+        """
+        n = Commands.delete().where(Commands.code == code).execute()
+        return n

@@ -32,4 +32,13 @@ class SettingKeyEnum(Enum):
     """
     工厂生产频率
     """
-    FactoryProduceFrequce="FactoryProduceFrequce"
+    FactoryProduceFrequce = "FactoryProduceFrequce"
+
+    """
+    拉取云端指令的频率
+    """
+    PullCommandFrequce = "PullCommandFrequce"
+    """
+    拉取指令地址
+    """
+    PullCommandUrl = "PullCommandUrl"
