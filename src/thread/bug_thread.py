@@ -23,12 +23,12 @@ class BugThread(BaseTread):
         """
         try:
             # 爬取网页数据
-            self._crawling()
+            self.__crawling()
         except:
             # todo 增加异常判断，规则判断
             self.stop()
 
-    def _crawling(self):
+    def __crawling(self):
         """
         爬取网页数据
         """
