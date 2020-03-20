@@ -23,9 +23,13 @@ class PullCommandThread(BaseTread, Singleton):
     def run(self) -> None:
         pullCommandFrequce = int(self.settingService.loadValue(SettingKeyEnum.PullCommandFrequce.name))
         while True:
-            flag = self.pull_commands()
-            if flag:
-                self.exec_commands()
+            try:
+                flag = self.pull_commands()
+                if flag:
+                    self.exec_commands()
+            except:
+                pass
+
             # 休眠 n 秒钟
             sleep(pullCommandFrequce)
 

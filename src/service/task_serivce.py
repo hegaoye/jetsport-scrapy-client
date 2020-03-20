@@ -39,13 +39,13 @@ class TaskService(BaseService):
         """
         return self.taskPoolDao.listByState(state)
 
-    def pull(self):
+    def pull(self) -> bool:
         """
         拉取任务检测
         1.获取拉取任务的请求地址
         2.拉取任务
         3.存储任务到任务列表
-        :return:
+        :return: True/False
         """
         # 1.获取拉取任务的请求地址
         pull_task_url = self.settingDao.loadValue(SettingKeyEnum.PullTaskUrl.name)
@@ -53,12 +53,9 @@ class TaskService(BaseService):
         # 2.拉取任务
         r = http.get(pull_task_url)
         if not r.success:
-            return
+            return False
         else:
-            # 3.#存储任务到任务列表
-            taskPool = TaskPool()
-            # todo 获取数据进行保存
-            self.taskPoolDao.insert(taskPool)
-
-    def push(self):
-        pass
+            # 3.存储任务到任务列表
+            for taskPool in r.data:
+                self.taskPoolDao.insert(taskPool)
+            return True

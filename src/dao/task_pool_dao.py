@@ -16,6 +16,14 @@ class TaskPoolDao(Singleton):
         """
         return TaskPool.select().where(TaskPool.state == state).order_by(TaskPool.ordinal.asc())
 
+    def loadByCrawlingRuleCode(self, crawling_rule_code) -> TaskPool:
+        """
+        根据 爬取规则编码查询任务
+        :param crawling_rule_code: 爬虫规则编码
+        :return: TaskPool
+        """
+        return TaskPool.get(TaskPool.crawling_rule_code == crawling_rule_code)
+
     def listByState(self, state) -> list:
         """
         根据状态查询任务的集合

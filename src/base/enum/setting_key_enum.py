@@ -42,3 +42,7 @@ class SettingKeyEnum(Enum):
     拉取指令地址
     """
     PullCommandUrl = "PullCommandUrl"
+    """
+    推送缓存数据的频率 单位 秒
+    """
+    PushDataCacheFrequce = "PushDataCacheFrequce"
