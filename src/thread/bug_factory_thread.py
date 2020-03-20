@@ -42,13 +42,13 @@ class BugFactoryThread(threading.Thread, Singleton):
             # 1.获取任务池中待分配的任务
             taskPool = self.taskPoolDao.load(TaskPoolStateEnum.Enable.name)
             if taskPool:
-
                 crawlingRule = self.crawlingRuleDao.load(taskPool.crawling_rule_code)
                 if crawlingRule:
                     # 2.分配任务给虫子进行工作 todo 增加爬虫存活率检测，应将虫子放到集合中，并判断状态
                     bug = BugThread(crawlingRule)
                     bug.start()
 
+                    # 缓存爬虫
                     bug_dict = {taskPool.code: bug}
                     self.list.append(bug_dict)
 
