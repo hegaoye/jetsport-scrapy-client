@@ -11,8 +11,8 @@ class TaskPoolDao(Singleton):
     def load(self, state) -> TaskPool:
         """
         根据状态加载一个任务
-        :param state:
-        :return:
+        :param state: 状态机
+        :return: TaskPool
         """
         return TaskPool.select().where(TaskPool.state == state).order_by(TaskPool.ordinal.asc())
 

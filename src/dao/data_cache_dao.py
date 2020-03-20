@@ -21,13 +21,13 @@ class DataCacheDao:
         """
         DataCache.create(code=dataCache.code, data=dataCache.data, crawling_rule_code=dataCache.crawling_rule_code)
 
-    def delete(self, list) -> None:
+    def delete(self, code_list) -> None:
         """
         删除已经同步的数据
-        :param list: code 集合
+        :param code_list: code 集合
         :return:
         """
-        DataCache.delete().where(DataCache.code in list).execute()
+        DataCache.delete().where(DataCache.code in code_list).execute()
 
 
 if __name__ == '__main__':

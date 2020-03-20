@@ -12,7 +12,7 @@ class SettingDao(Singleton):
         """
         加载设置
         :param key: 枚举键
-        :return:
+        :return: Setting
         """
         return Setting.get(Setting.key == key)
 
@@ -20,7 +20,7 @@ class SettingDao(Singleton):
         """
         加载一个值
         :param key: 主键
-        :return:
+        :return: 值
         """
         return self.load(key).value
 
