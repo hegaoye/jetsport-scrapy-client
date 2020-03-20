@@ -9,7 +9,20 @@ class CrawlingRuleDao(Singleton):
     """
 
     def insert(self, crawlingRule) -> None:
-        CrawlingRule.create()
+        """
+        插入一条爬虫规则
+        :param crawlingRule:
+        :return:
+        """
+        CrawlingRule.create(code=crawlingRule.code, api_code=crawlingRule.api_code,
+                            get_value_method=crawlingRule.get_value_method, api_field=crawlingRule.api_field,
+                            field_type=crawlingRule.field_type, value_type=crawlingRule.value_type,
+                            result_type=crawlingRule.result_type, frequce=crawlingRule.frequce,
+                            xpath=crawlingRule.xpath, sub_xpath=crawlingRule.sub_xpath,
+                            sub_xpath_relative=crawlingRule.sub_xpath_relative, sub_label=crawlingRule.sub_label,
+                            sub_label_class=crawlingRule.sub_label_class, opt=crawlingRule.opt,
+                            access_url=crawlingRule.access_url, target_code=crawlingRule.target_code,
+                            pre_code=crawlingRule.pre_code, api_url=crawlingRule.api_url)
 
     def load(self, code) -> CrawlingRule:
         """
