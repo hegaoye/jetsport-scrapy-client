@@ -10,8 +10,12 @@ class DataCache(BaseModel):
     """
     code = PrimaryKeyField()
     data = TextField()
-    crawling_rule_code = CharField()
+    crawling_rule_code = CharField(max_length=64)
 
     class Meta:
         order_by = ('code',)
         db_table = 'data_cache'
+
+
+if __name__ == '__main__':
+    DataCache.create_table()

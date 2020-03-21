@@ -18,3 +18,11 @@ class CrawlingRuleService(BaseService):
         :return: CrawlingRule
         """
         return self.crawlingRuleDao.load_by_code(code)
+
+    def list_sub(self, pre_code) -> list:
+        """
+        查询爬虫规则列表
+        :param pre_code: 上级编码
+        :return: list
+        """
+        return self.crawlingRuleDao.list_sub(pre_code)

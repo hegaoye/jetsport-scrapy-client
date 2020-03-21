@@ -38,3 +38,11 @@ class CrawlingRuleDao(Singleton):
         :return: CrawlingRule
         """
         return CrawlingRule.get(CrawlingRule.code == code)
+
+    def list_sub(self, pre_code) -> list:
+        """
+        查询爬虫规则列表
+        :param pre_code: 上级编码
+        :return: list
+        """
+        return CrawlingRule.select().where(CrawlingRule.pre_code == pre_code).order_by(CrawlingRule.ordinal.asc())
