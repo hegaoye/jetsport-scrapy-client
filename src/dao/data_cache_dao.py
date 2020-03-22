@@ -19,7 +19,8 @@ class DataCacheDao:
         插入一条数据
         :param dataCache: 数据
         """
-        DataCache.create(code=dataCache.code, data=dataCache.data, crawling_rule_code=dataCache.crawling_rule_code)
+        DataCache.create(task_code=dataCache.task_code, api_code=dataCache.api_codel,
+                         crawling_rule_code=dataCache.crawling_rule_code, data=dataCache.data)
 
     def delete(self, code_list) -> None:
         """
