@@ -5,6 +5,7 @@ from src.base.browser import Browser
 from src.base.enum.get_value_type_enum import GetValueTypeEnum
 from src.base.enum.result_type_enum import ResultTypeEnum
 from src.base.enum.xpath_type_enum import XpathTypeEnum
+from src.base.enum.y_n_enum import YNEnum
 from src.entity.crawling_data import CrawlingData
 from src.service.crawling_data_service import CrawlingDataService
 from src.service.crawling_rule_service import CrawlingRuleService
@@ -37,30 +38,22 @@ class BugThread(BaseTread):
         """
         爬取网页数据
         """
-        access_url = self.crawlingRule.access_url
-        xpath = self.crawlingRule.xpath
-        if self.crawlingRule.result_type == ResultTypeEnum.List.name:
-            elements = self.list(access_url, xpath)
-            for element in elements:
-                if self.crawlingRule.get_value_method == GetValueTypeEnum.Text.name:
-                    data = element.text
-                else:
-                    data = element.get_attribute(self.crawlingRule.html_attr)
+        # 如果是参数规则则爬取
+        if self.crawlingRule.is_parameter == YNEnum.Y.name:
+            if self.crawlingRule.result_type == ResultTypeEnum.List.name:
+                access_url = self.crawlingRule.access_url
+                xpath = self.crawlingRule.xpath
+                elements = self.list(access_url, xpath)
+                for element in elements:
+                    if self.crawlingRule.get_value_method == GetValueTypeEnum.Text.name:
+                        data = element.text
+                    else:
+                        data = element.get_attribute(self.crawlingRule.html_attr)
 
-                crawling_data = CrawlingData()
-                crawling_data.crawling_code = self.crawlingRule.code
-                crawling_data.data_type = self.crawlingRule.value_type
-                crawling_data.value = data
-                crawling_data.pre_code = self.crawlingRule.pre_code
-                self.crawlingDataService.save(crawling_data)
-        elif self.crawlingRule.result_type == ResultTypeEnum.Data.name:
+        elif self.crawlingRule.is_parameter != YNEnum.N.name:
+            # 如果不是参数规则则不爬取
             if self.crawlingRule.xpath_type == XpathTypeEnum.Click.name:
-                self.detail_with_url(access_url, xpath, )
-
-        crawling_rule_code = self.crawlingRule.code
-        crawling_rule_list = self.crawlingRuleService.list_sub(crawling_rule_code)
-        if crawling_rule_list and crawling_rule_list.__sizeof__() > 0:
-            for crawling_rule in crawling_rule_list:
+                self.browser.find_element_by_xpath(self.crawlingRule.xpath).click()
 
     def list(self, access_url, data_xpath, click_xpath=None) -> list:
         if not access_url:
