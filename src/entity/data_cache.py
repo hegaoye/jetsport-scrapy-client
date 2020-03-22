@@ -8,12 +8,14 @@ class DataCache(BaseModel):
     """
     数据缓存实体
     """
-    code = PrimaryKeyField()
-    data = TextField()
+    id = PrimaryKeyField()
     crawling_rule_code = CharField(max_length=64)
+    task_code = CharField(max_length=64)
+    api_code = CharField(max_length=64)
+    data = TextField()
 
     class Meta:
-        order_by = ('code',)
+        order_by = ('id',)
         db_table = 'data_cache'
 
 
