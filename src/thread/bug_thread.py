@@ -2,7 +2,7 @@
 from time import sleep
 
 from src.base.browser import Browser
-from src.base.enum.get_value_method_enum import GetValueMethodEnum
+from src.base.enum.get_value_type_enum import GetValueTypeEnum
 from src.base.enum.result_type_enum import ResultTypeEnum
 from src.base.enum.xpath_type_enum import XpathTypeEnum
 from src.entity.crawling_data import CrawlingData
@@ -42,7 +42,7 @@ class BugThread(BaseTread):
         if self.crawlingRule.result_type == ResultTypeEnum.List.name:
             elements = self.list(access_url, xpath)
             for element in elements:
-                if self.crawlingRule.get_value_method == GetValueMethodEnum.Text.name:
+                if self.crawlingRule.get_value_method == GetValueTypeEnum.Text.name:
                     data = element.text
                 else:
                     data = element.get_attribute(self.crawlingRule.html_attr)
@@ -93,9 +93,9 @@ class BugThread(BaseTread):
         element = self.browser.find_element_by_xpath(data_xpath)
 
         # 获取值的方式
-        if get_value_type == GetValueMethodEnum.Text.name:
+        if get_value_type == GetValueTypeEnum.Text.name:
             data = element.text
-        elif get_value_type == GetValueMethodEnum.Attribute.name and value_attribute:
+        elif get_value_type == GetValueTypeEnum.Attribute.name and value_attribute:
             data = element.get_attribute(value_attribute)
 
         return data
