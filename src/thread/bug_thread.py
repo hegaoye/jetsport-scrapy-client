@@ -40,7 +40,7 @@ class BugThread(BaseTread):
             # todo 增加异常判断，规则判断
             self.stop()
 
-    def __crawling(self, crawlingRule):
+    def __crawling(self, crawlingRule, pre_id=None):
         """
         爬取网页数据
         """
@@ -75,17 +75,15 @@ class BugThread(BaseTread):
                         crawling_rule_data.parameter_code = crawlingRule.parameter_code
                         crawling_rule_data.crawling_rule_code = crawlingRule.code
                         crawling_rule_data.value = data
+                        if pre_id:
+                            crawling_rule_data.pre_id = pre_id
                         self.crawlingDataService.saveOrModify(crawling_rule_data)
 
                         if crawling_rule_sub_list and crawling_rule_sub_list.__sizeof__() > 0:
                             # 下级数据关联
                             for crawling_rule_sub in crawling_rule_sub_list:
-                                crawling_rule_data_sub = CrawlingRuleData()
-                                crawling_rule_data_sub.pre_id = crawling_rule_data.id
-                                crawling_rule_data_sub.parameter_code = crawling_rule_sub.parameter_code
-                                crawling_rule_data_sub.crawling_rule_code = crawling_rule_sub.code
-                                crawling_rule_data_sub.value = ""
-                                self.crawlingDataService.saveOrModify(crawling_rule_data_sub)
+                                self.__crawling(crawling_rule_sub, crawling_rule_data.id)
+
 
             elif XpathTypeEnum.Image.name.__eq__(xpath_type):
                 pass
