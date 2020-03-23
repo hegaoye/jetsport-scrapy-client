@@ -10,6 +10,7 @@ class CrawlingRuleData(BaseModel):
     """
     id = PrimaryKeyField()
     pre_id = IntegerField()
+    parameter_code = CharField(max_length=64)
     crawling_rule_code = CharField(max_length=64)
     value = TextField()
 

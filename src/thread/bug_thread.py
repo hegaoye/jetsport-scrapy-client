@@ -1,13 +1,14 @@
 # coding=utf-8
-from time import sleep
 
 from src.base.browser import Browser
 from src.base.enum.get_value_type_enum import GetValueTypeEnum
-from src.base.enum.result_type_enum import ResultTypeEnum
 from src.base.enum.xpath_type_enum import XpathTypeEnum
 from src.base.enum.y_n_enum import YNEnum
-from src.entity.crawling_data import CrawlingData
+from src.entity.crawling_rule_data import CrawlingRuleData
+from src.entity.crawling_rule_data_link import CrawlingRuleDataLink
+from src.service.crawling_data_link_service import CrawlingRuleDataLinkService
 from src.service.crawling_data_service import CrawlingDataService
+from src.service.crawling_rule_data_service import CrawlingRuleDataService
 from src.service.crawling_rule_service import CrawlingRuleService
 from src.thread.base_thread import BaseTread
 
@@ -22,6 +23,8 @@ class BugThread(BaseTread):
         self.crawlingRule = crawlingRule
         self.crawlingRuleService = CrawlingRuleService()
         self.crawlingDataService = CrawlingDataService()
+        self.crawlingRuleDataService = CrawlingRuleDataService()
+        self.crawlingDataLinkService = CrawlingRuleDataLinkService()
 
     def run(self):
         """
@@ -29,75 +32,85 @@ class BugThread(BaseTread):
         """
         try:
             # 爬取网页数据
-            self.__crawling()
+            self.__crawling(self.crawlingRule)
         except:
             # todo 增加异常判断，规则判断
             self.stop()
 
-    def __crawling(self):
+    def __crawling(self, crawlingRule):
         """
         爬取网页数据
         """
-        # 如果是参数规则则爬取
-        if self.crawlingRule.is_parameter == YNEnum.Y.name:
-            if self.crawlingRule.result_type == ResultTypeEnum.List.name:
-                access_url = self.crawlingRule.access_url
-                xpath = self.crawlingRule.xpath
-                elements = self.list(access_url, xpath)
-                for element in elements:
-                    if self.crawlingRule.get_value_method == GetValueTypeEnum.Text.name:
-                        data = element.text
-                    else:
-                        data = element.get_attribute(self.crawlingRule.html_attr)
+        is_parameter = self.crawlingRule.is_parameter
+        xpath = crawlingRule.xpath
+        xpath_type = crawlingRule.xpath_type
+        # 如果规则爬取的数据是接口的参数的则爬取
+        if YNEnum.Y.name.__eq__(is_parameter):
+            if XpathTypeEnum.List.name.__eq__(xpath_type):
+                access_url = crawlingRule.access_url
+                if access_url:
+                    self.browser.get(access_url)
 
-        elif self.crawlingRule.is_parameter != YNEnum.N.name:
-            # 如果不是参数规则则不爬取
-            if self.crawlingRule.xpath_type == XpathTypeEnum.Click.name:
-                self.browser.find_element_by_xpath(self.crawlingRule.xpath).click()
+                elements = self.browser.find_elements_by_xpath(xpath)
+                if elements and elements.__sizeof__() > 0:
+                    crawling_rule_sub_list = self.crawlingRuleService.list_sub(crawlingRule.code)
 
-    def list(self, access_url, data_xpath, click_xpath=None) -> list:
-        if not access_url:
-            return
+                    for element in elements:
+                        if GetValueTypeEnum.Text.name.__eq__(crawlingRule.get_value_type):
+                            # 文本方式获取数据
+                            data = element.text
+                        elif GetValueTypeEnum.Attribute.name.__eq__(crawlingRule.get_value_type):
+                            # 属性方式获取数据
+                            data = element.get_attribute(crawlingRule.html_attr)
+                        elif GetValueTypeEnum.Download.name.__eq__(crawlingRule.get_value_type):
+                            # todo 下载
+                            pass
 
-        # 打开url页面
-        self.browser.get(access_url)
+                        # 存储爬取的数据
+                        crawling_rule_data = CrawlingRuleData()
+                        crawling_rule_data.parameter_code = crawlingRule.parameter_code
+                        crawling_rule_data.crawling_rule_code = crawlingRule.code
+                        crawling_rule_data.value = data
+                        self.crawlingDataService.saveOrModify(crawling_rule_data)
 
-        # 如果需要点击则找到元素进行点击
-        if click_xpath:
-            self.browser.find_element_by_xpath(click_xpath).click()
-            # 点击后默认等待加载 3s
-            sleep(3)
+                        if crawling_rule_sub_list and crawling_rule_sub_list.__sizeof__() > 0:
+                            # 下级数据关联
+                            for crawling_rule_sub in crawling_rule_sub_list:
+                                crawling_rule_data_sub = CrawlingRuleData()
+                                crawling_rule_data_sub.pre_id = crawling_rule_data.id
+                                crawling_rule_data_sub.parameter_code = crawling_rule_sub.parameter_code
+                                crawling_rule_data_sub.crawling_rule_code = crawling_rule_sub.code
+                                crawling_rule_data_sub.value = ""
+                                self.crawlingDataService.saveOrModify(crawling_rule_data_sub)
 
-        # 获取集合元素
-        elements = self.browser.find_elements_by_xpath(data_xpath)
-        if not elements:
-            # todo 如果找不到则报错，进行规则报错
-            pass
+            elif XpathTypeEnum.Text.name.__eq__(xpath_type):
+                # 爬取数据并存储
+                value = self.browser.find_element_by_xpath(xpath)
+                crawling_rule_data = CrawlingRuleData()
+                crawling_rule_data.crawling_code = crawlingRule.code
+                crawling_rule_data.parameter_code = crawlingRule.parameter_code
+                crawling_rule_data.value = value
+                self.crawlingRuleDataService.saveOrModify(crawling_rule_data)
+            elif XpathTypeEnum.Image.name.__eq__(xpath_type):
+                pass
+            elif XpathTypeEnum.Video.name.__eq__(xpath_type):
+                pass
+            elif XpathTypeEnum.Audio.name.__eq__(xpath_type):
+                pass
 
-        return elements
-
-    def detail(self, data_xpath, click_xpath, get_value_type, value_attribute=None) -> object:
-        # 如果需要点击则找到元素进行点击
-        if click_xpath:
-            self.browser.find_element_by_xpath(click_xpath).click()
-            # 点击后默认等待加载 3s
-            sleep(3)
-
-        element = self.browser.find_element_by_xpath(data_xpath)
-
-        # 获取值的方式
-        if get_value_type == GetValueTypeEnum.Text.name:
-            data = element.text
-        elif get_value_type == GetValueTypeEnum.Attribute.name and value_attribute:
-            data = element.get_attribute(value_attribute)
-
-        return data
-
-    def detail_with_url(self, access_url, data_xpath, click_xpath, get_value_type, value_attribute=None) -> object:
-        if access_url:
-            # 打开url页面
-            self.browser.get(access_url)
-        self.detail(data_xpath, click_xpath, get_value_type, value_attribute)
+        elif YNEnum.N.name.__eq__(is_parameter):
+            # 如果爬取规则爬取的数据不是接口数据则进行判断是否需要点击或者另外打开网页等
+            if XpathTypeEnum.Click.name.__eq__(xpath_type):
+                self.browser.find_element_by_xpath(xpath).click()
+            elif XpathTypeEnum.Link.name.__eq__(xpath_type):
+                # 爬取并存储链接路径
+                link_list = self.browser.find_elements_by_xpath(xpath)
+                if link_list and link_list.__sizeof__() > 0:
+                    for link in link_list:
+                        crawlingRuleDataLink = CrawlingRuleDataLink()
+                        crawlingRuleDataLink.crawling_rule_code = crawlingRule.code
+                        crawlingRuleDataLink.link = link
+                        self.crawlingDataLinkService.save(crawlingRuleDataLink)
 
 
 if __name__ == '__main__':

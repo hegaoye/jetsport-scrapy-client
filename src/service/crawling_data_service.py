@@ -8,3 +8,7 @@ class CrawlingDataService(BaseService):
 
     def save(self, crawling_data) -> None:
         self.crawlingDataDao.insert(crawling_data)
+
+    def saveOrModify(self,crawling_data):
+        self.crawlingDataDao
+        self.crawlingDataDao.insert(crawling_data)

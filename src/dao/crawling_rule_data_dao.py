@@ -11,6 +11,9 @@ class CrawlingRuleDataDao(Singleton):
     def load(self, id) -> CrawlingRuleData:
         return CrawlingRuleData.get(CrawlingRuleData.id == id)
 
+    def load_by_crawling_rule_code(self, crawling_rule_code) -> CrawlingRuleData:
+        return CrawlingRuleData.get(CrawlingRuleData.crawling_rule_code == crawling_rule_code)
+
     def load(self, pre_id, crawling_rule_code) -> CrawlingRuleData:
         return CrawlingRuleData.get(CrawlingRuleData.pre_id == pre_id,
                                     CrawlingRuleData.crawling_rule_code == crawling_rule_code)
