@@ -14,7 +14,7 @@ class CrawlingRuleDataDao(Singleton):
     def load_by_crawling_rule_code(self, crawling_rule_code) -> CrawlingRuleData:
         return CrawlingRuleData.get(CrawlingRuleData.crawling_rule_code == crawling_rule_code)
 
-    def load(self, pre_id, crawling_rule_code) -> CrawlingRuleData:
+    def load_by_pre_id_and_crawling_rule_code(self, pre_id, crawling_rule_code) -> CrawlingRuleData:
         return CrawlingRuleData.get(CrawlingRuleData.pre_id == pre_id,
                                     CrawlingRuleData.crawling_rule_code == crawling_rule_code)
 
@@ -24,3 +24,6 @@ class CrawlingRuleDataDao(Singleton):
     def insert(self, crawlingRuleData) -> None:
         CrawlingRuleData.create(pre_id=crawlingRuleData.pre_id, crawling_rule_code=crawlingRuleData.crawling_rule_code,
                                 value=crawlingRuleData.value)
+
+    def list(self, crawling_rule_code) -> list:
+        return CrawlingRuleData.select().where(CrawlingRuleData.crawling_rule_code == crawling_rule_code)

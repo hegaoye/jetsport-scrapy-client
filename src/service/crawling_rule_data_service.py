@@ -7,8 +7,8 @@ class CrawlingRuleDataService(BaseService):
     def __init__(self):
         self.crawlingRuleDataDao = CrawlingRuleDataDao()
 
-    def load(self, code) -> CrawlingRuleData:
-        return self.crawlingRuleDataDao.load(code)
+    def load(self, id) -> CrawlingRuleData:
+        return self.crawlingRuleDataDao.load(id)
 
     def saveOrModify(self, crawlingRuleData):
         """
@@ -21,3 +21,6 @@ class CrawlingRuleDataService(BaseService):
             self.crawlingRuleDataDao.insert(crawlingRuleData)
         else:
             self.crawlingRuleDataDao.update(crawling_rule_code, crawlingRuleData.value)
+
+    def list(self, crawling_rule_code) -> list:
+        return self.crawlingRuleDataDao.list(crawling_rule_code)

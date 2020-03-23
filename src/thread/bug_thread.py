@@ -33,6 +33,9 @@ class BugThread(BaseTread):
         try:
             # 爬取网页数据
             self.__crawling(self.crawlingRule)
+
+            # 拼装数据 使用多线程进行
+
         except:
             # todo 增加异常判断，规则判断
             self.stop()
@@ -44,17 +47,18 @@ class BugThread(BaseTread):
         is_parameter = self.crawlingRule.is_parameter
         xpath = crawlingRule.xpath
         xpath_type = crawlingRule.xpath_type
+        access_url = crawlingRule.access_url
+        # 如果有进入入口先打开页面
+        if access_url:
+            self.browser.get(access_url)
+
+        crawling_rule_sub_list = self.crawlingRuleService.list_sub(crawlingRule.code)
+
         # 如果规则爬取的数据是接口的参数的则爬取
         if YNEnum.Y.name.__eq__(is_parameter):
-            if XpathTypeEnum.List.name.__eq__(xpath_type):
-                access_url = crawlingRule.access_url
-                if access_url:
-                    self.browser.get(access_url)
-
+            if XpathTypeEnum.Text.name.__eq__(xpath_type):
                 elements = self.browser.find_elements_by_xpath(xpath)
                 if elements and elements.__sizeof__() > 0:
-                    crawling_rule_sub_list = self.crawlingRuleService.list_sub(crawlingRule.code)
-
                     for element in elements:
                         if GetValueTypeEnum.Text.name.__eq__(crawlingRule.get_value_type):
                             # 文本方式获取数据
@@ -83,14 +87,6 @@ class BugThread(BaseTread):
                                 crawling_rule_data_sub.value = ""
                                 self.crawlingDataService.saveOrModify(crawling_rule_data_sub)
 
-            elif XpathTypeEnum.Text.name.__eq__(xpath_type):
-                # 爬取数据并存储
-                value = self.browser.find_element_by_xpath(xpath)
-                crawling_rule_data = CrawlingRuleData()
-                crawling_rule_data.crawling_code = crawlingRule.code
-                crawling_rule_data.parameter_code = crawlingRule.parameter_code
-                crawling_rule_data.value = value
-                self.crawlingRuleDataService.saveOrModify(crawling_rule_data)
             elif XpathTypeEnum.Image.name.__eq__(xpath_type):
                 pass
             elif XpathTypeEnum.Video.name.__eq__(xpath_type):
@@ -102,6 +98,10 @@ class BugThread(BaseTread):
             # 如果爬取规则爬取的数据不是接口数据则进行判断是否需要点击或者另外打开网页等
             if XpathTypeEnum.Click.name.__eq__(xpath_type):
                 self.browser.find_element_by_xpath(xpath).click()
+                if crawling_rule_sub_list and crawling_rule_sub_list.__sizeof__() > 0:
+                    for crawling_rule_sub in crawling_rule_sub_list:
+                        self.__crawling(crawling_rule_sub)
+
             elif XpathTypeEnum.Link.name.__eq__(xpath_type):
                 # 爬取并存储链接路径
                 link_list = self.browser.find_elements_by_xpath(xpath)
@@ -111,6 +111,10 @@ class BugThread(BaseTread):
                         crawlingRuleDataLink.crawling_rule_code = crawlingRule.code
                         crawlingRuleDataLink.link = link
                         self.crawlingDataLinkService.save(crawlingRuleDataLink)
+
+                    if crawling_rule_sub_list and crawling_rule_sub_list.__sizeof__() > 0:
+                        for crawling_rule_sub in crawling_rule_sub_list:
+                            self.__crawling(crawling_rule_sub)
 
 
 if __name__ == '__main__':
