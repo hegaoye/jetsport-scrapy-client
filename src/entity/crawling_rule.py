@@ -25,7 +25,7 @@ class CrawlingRule(BaseModel):
     # 取值属性名
     html_attr = CharField(max_length=128)
     # 入口url
-    access_url = CharField(max_length=256)
+    access_url = CharField(max_length=256, null=True)
     # 爬取频率
     frequce = IntegerField()
     # 是否是参数规则 Y 是，参数规则则映射接口的参数 , N 否，不是参数规则，则仅用于打开网址，或者点击操作等规则

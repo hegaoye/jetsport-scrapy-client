@@ -1,4 +1,3 @@
-from src.base.enum.y_n_enum import YNEnum
 from src.dao.crawling_rule_dao import CrawlingRuleDao
 from src.entity.crawling_rule import CrawlingRule
 from src.service.base_service import BaseService

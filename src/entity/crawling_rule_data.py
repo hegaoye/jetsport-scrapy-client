@@ -9,14 +9,14 @@ class CrawlingRuleData(BaseModel):
     临时规则数据
     """
     id = PrimaryKeyField()
-    pre_id = IntegerField()
-    parameter_code = CharField(max_length=64)
+    pre_id = IntegerField(null=True)
+    parameter_code = CharField(max_length=64, null=True)
     crawling_rule_code = CharField(max_length=64)
-    parameter_name = CharField(max_length=64)
+    parameter_name = CharField(max_length=64, null=True)
     value = TextField()
 
     class Meta:
-        order_by = ('code',)
+        order_by = ('id',)
         db_table = 'crawling_rule_data'
 
 
