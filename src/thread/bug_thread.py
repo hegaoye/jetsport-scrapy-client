@@ -114,6 +114,15 @@ class BugThread(BaseTread):
                         for crawling_rule_sub in crawling_rule_sub_list:
                             self.__crawling(crawling_rule_sub)
 
+    def test(self):
+        self.browser.get('https://777score.ph/')
+        xpath = '/html/body/div[3]/aside/div[2]/ul/li/a'
+        list = self.browser.find_elements_by_xpath(xpath)
+        for e in list:
+            print(e.location)
+            print(e.text)
+
 
 if __name__ == '__main__':
     bug = BugThread(None)
+    bug.test()
