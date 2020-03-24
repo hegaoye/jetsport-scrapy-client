@@ -100,6 +100,7 @@ class BugThread(BaseTread):
                     for crawling_rule_sub in crawling_rule_sub_list:
                         self.__crawling(crawling_rule_sub)
 
+
             elif XpathTypeEnum.Link.name.__eq__(xpath_type):
                 # 爬取并存储链接路径
                 link_list = self.browser.find_elements_by_xpath(xpath)
@@ -110,19 +111,14 @@ class BugThread(BaseTread):
                         crawlingRuleDataLink.link = link
                         self.crawlingDataLinkService.save(crawlingRuleDataLink)
 
-                    if crawling_rule_sub_list and crawling_rule_sub_list.__sizeof__() > 0:
-                        for crawling_rule_sub in crawling_rule_sub_list:
-                            self.__crawling(crawling_rule_sub)
+                        if crawling_rule_sub_list and crawling_rule_sub_list.__sizeof__() > 0:
+                            self.browser.get(link)
+                            for crawling_rule_sub in crawling_rule_sub_list:
+                                self.__crawling(crawling_rule_sub)
 
-    def test(self):
-        self.browser.get('https://777score.ph/')
-        xpath = '/html/body/div[3]/aside/div[2]/ul/li/a'
-        list = self.browser.find_elements_by_xpath(xpath)
-        for e in list:
-            print(e.location)
-            print(e.text)
+                            # 返回上一页
+                            self.browser.back()
 
 
 if __name__ == '__main__':
     bug = BugThread(None)
-    bug.test()

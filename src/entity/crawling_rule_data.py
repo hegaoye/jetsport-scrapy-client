@@ -12,6 +12,7 @@ class CrawlingRuleData(BaseModel):
     pre_id = IntegerField()
     parameter_code = CharField(max_length=64)
     crawling_rule_code = CharField(max_length=64)
+    parameter_name = CharField(max_length=64)
     value = TextField()
 
     class Meta:

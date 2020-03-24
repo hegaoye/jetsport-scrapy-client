@@ -14,6 +14,7 @@ class Parameter(BaseModel):
     name = CharField(max_length=16)
     field_type = CharField(max_length=16)
     parameter_type = CharField(max_length=16)
+    is_root = CharField(max_length=16)
 
     class Meta:
         order_by = ('code',)
