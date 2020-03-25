@@ -70,7 +70,7 @@ class BugThread(BaseTread):
                 else:
                     elements = element.find_elements_by_xpath(xpath)
 
-                if elements and elements.__sizeof__() > 0:
+                if elements and len(elements) > 0:
                     for element in elements:
                         if GetValueTypeEnum.Text.name.__eq__(crawlingRule.get_value_type):
                             # 文本方式获取数据
@@ -86,7 +86,7 @@ class BugThread(BaseTread):
                         id = self.crawlingRuleDataService.saveOrModify(crawlingRule.parameter_code, crawlingRule.code,
                                                                        data, pre_id)
 
-                        if crawling_rule_sub_list and crawling_rule_sub_list.__sizeof__() > 0:
+                        if crawling_rule_sub_list and len(crawling_rule_sub_list) > 0:
                             # 下级数据关联
                             for crawlingRuleSub in crawling_rule_sub_list:
                                 # 循环爬取
@@ -104,9 +104,22 @@ class BugThread(BaseTread):
             if XpathTypeEnum.Entrance.name.__eq__(xpath_type):
                 # 入口判断
                 self.browser.get(crawlingRule.access_url)
-                if crawling_rule_sub_list and crawling_rule_sub_list.__sizeof__() > 0:
+                if crawling_rule_sub_list and len(crawling_rule_sub_list) > 0:
                     for crawlingRuleSub in crawling_rule_sub_list:
                         self.__crawling(crawlingRuleSub, pre_id, element)
+
+            elif XpathTypeEnum.Element.name.__eq__(xpath_type):
+                # 判断元素
+                if not element:
+                    sub_elements = self.browser.find_elements_by_xpath(xpath)
+                else:
+                    sub_elements = element.find_elements_by_xpath(xpath)
+
+                if sub_elements and len(sub_elements) > 0:
+                    for sub_element in sub_elements:
+                        for crawlingRuleSub in crawling_rule_sub_list:
+                            self.__crawling(crawlingRuleSub, pre_id, sub_element)
+
 
             elif XpathTypeEnum.Click.name.__eq__(xpath_type):
                 # 点击事件判断
@@ -119,7 +132,7 @@ class BugThread(BaseTread):
                     for click_element in click_elements:
                         click_element.click()
                         sleep(crawlingRule.frequce)
-                        if crawling_rule_sub_list and crawling_rule_sub_list.__sizeof__() > 0:
+                        if crawling_rule_sub_list and len(crawling_rule_sub_list) > 0:
                             for crawlingRuleSub in crawling_rule_sub_list:
                                 self.__crawling(crawlingRuleSub, pre_id, click_element)
 
@@ -131,7 +144,7 @@ class BugThread(BaseTread):
                 else:
                     link_list = element.find_elements_by_xpath(xpath)
 
-                if link_list and link_list.__sizeof__() > 0:
+                if link_list and len(link_list) > 0:
                     links = []
                     for link in link_list:
                         if GetValueTypeEnum.Attribute.name.__eq__(crawlingRule.get_value_type):
@@ -140,8 +153,7 @@ class BugThread(BaseTread):
                             if link_data:
                                 links.append(link_data)
 
-                    if crawling_rule_sub_list and crawling_rule_sub_list.__sizeof__() > 0:
-                        i = 0
+                    if crawling_rule_sub_list and len(crawling_rule_sub_list) > 0:
                         for url in links:
                             crawlingRuleSub = CrawlingRule()
                             crawlingRuleSub.xpath_type = XpathTypeEnum.Entrance.name
@@ -151,18 +163,10 @@ class BugThread(BaseTread):
                             bug = BugThread(crawlingRuleSub, pre_id)
                             bug.start()
                             sleep(crawlingRule.frequce)
-                            # for crawlingRuleSub in crawling_rule_sub_list:
-                            #     crawlingRuleSub.access_url = url
-                            #     bug = BugThread(crawlingRuleSub)
-                            #     bug.start()
-
-    def test(self):
-        self.browser.get('https://777score.ph/')
 
 
 if __name__ == '__main__':
     c = CrawlingRuleService()
-    cr = c.load_by_code(1)
+    cr = c.load_by_code(14)
     bug = BugThread(cr)
     bug.start()
-    # bug.test()
