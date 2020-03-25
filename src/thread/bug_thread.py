@@ -19,13 +19,13 @@ class BugThread(BaseTread):
     """
 
     def __init__(self, crawlingRule=None, pre_id=None):
+        threading.Thread.__init__(self)
         self.browser = Browser().get_brower()
         self.crawlingRule = crawlingRule
         self.crawlingRuleService = CrawlingRuleService()
         self.crawlingRuleDataService = CrawlingRuleDataService()
         self.crawlingDataLinkService = CrawlingRuleDataLinkService()
         self.pre_id = pre_id
-        threading.Thread.__init__(self)
 
     def run(self):
         """
@@ -141,6 +141,7 @@ class BugThread(BaseTread):
                                 links.append(link_data)
 
                     if crawling_rule_sub_list and crawling_rule_sub_list.__sizeof__() > 0:
+                        i = 0
                         for url in links:
                             crawlingRuleSub = CrawlingRule()
                             crawlingRuleSub.xpath_type = XpathTypeEnum.Entrance.name
@@ -149,6 +150,7 @@ class BugThread(BaseTread):
                             crawlingRuleSub.code = crawlingRule.code
                             bug = BugThread(crawlingRuleSub, pre_id)
                             bug.start()
+                            sleep(crawlingRule.frequce)
                             # for crawlingRuleSub in crawling_rule_sub_list:
                             #     crawlingRuleSub.access_url = url
                             #     bug = BugThread(crawlingRuleSub)
