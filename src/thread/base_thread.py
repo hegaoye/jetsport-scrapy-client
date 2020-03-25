@@ -13,4 +13,8 @@ class BaseTread(threading.Thread):
         self.settingService = SettingService()
 
     def stop(self):
-        self.join()
+        try:
+            super()._stop()
+            self.join()
+        except:
+            pass

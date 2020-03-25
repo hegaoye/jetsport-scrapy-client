@@ -6,6 +6,7 @@ from src.base.browser import Browser
 from src.base.enum.get_value_type_enum import GetValueTypeEnum
 from src.base.enum.xpath_type_enum import XpathTypeEnum
 from src.base.enum.y_n_enum import YNEnum
+from src.entity.crawling_rule import CrawlingRule
 from src.service.crawling_data_link_service import CrawlingRuleDataLinkService
 from src.service.crawling_rule_data_service import CrawlingRuleDataService
 from src.service.crawling_rule_service import CrawlingRuleService
@@ -17,13 +18,14 @@ class BugThread(BaseTread):
     虫子，用于爬取数据的爬虫，多线程实现可以多线程并行多个规则，
     """
 
-    def __init__(self, crawlingRule=None):
+    def __init__(self, crawlingRule=None, pre_id=None):
         threading.Thread.__init__(self)
         self.browser = Browser().get_brower()
         self.crawlingRule = crawlingRule
         self.crawlingRuleService = CrawlingRuleService()
         self.crawlingRuleDataService = CrawlingRuleDataService()
         self.crawlingDataLinkService = CrawlingRuleDataLinkService()
+        self.pre_id = pre_id
 
     def run(self):
         """
@@ -31,13 +33,21 @@ class BugThread(BaseTread):
         """
         try:
             # 爬取网页数据
-            self.__crawling(self.crawlingRule)
-
+            self.__crawling(self.crawlingRule, self.pre_id)
             # 拼装数据 使用多线程进行
 
         except:
             # todo 增加异常判断，规则判断
-            self.stop()
+            pass
+
+        try:
+            self.browser.close()
+            self.browser.quit()
+        except:
+            pass
+
+        self.stop()
+
 
     def __crawling(self, crawlingRule, pre_id=None, element=None):
         """
@@ -46,15 +56,12 @@ class BugThread(BaseTread):
         is_parameter = crawlingRule.is_parameter
         xpath = crawlingRule.xpath
         xpath_type = crawlingRule.xpath_type
-        access_url = crawlingRule.access_url
+        # access_url = crawlingRule.access_url
         # 如果有进入入口先打开页面
         # if access_url and str(access_url).startswith('http'):
         #     self.browser.get(access_url)
 
         crawling_rule_sub_list = self.crawlingRuleService.list_sub(crawlingRule.code)
-        if crawling_rule_sub_list:
-            for c in crawling_rule_sub_list:
-                print(c.code, ' ', c.xpath)
 
         # 如果规则爬取的数据是接口的参数的则爬取
         if YNEnum.Y.name.__eq__(is_parameter):
@@ -96,13 +103,14 @@ class BugThread(BaseTread):
 
         elif YNEnum.N.name.__eq__(is_parameter):
             if XpathTypeEnum.Entrance.name.__eq__(xpath_type):
+                # 入口判断
                 self.browser.get(crawlingRule.access_url)
                 if crawling_rule_sub_list and crawling_rule_sub_list.__sizeof__() > 0:
                     for crawlingRuleSub in crawling_rule_sub_list:
-                        self.__crawling(crawlingRuleSub)
+                        self.__crawling(crawlingRuleSub, pre_id, element)
 
             elif XpathTypeEnum.Click.name.__eq__(xpath_type):
-                # 如果爬取规则爬取的数据不是接口数据则进行判断是否需要点击或者另外打开网页等
+                # 点击事件判断
                 if not element:
                     click_elements = self.browser.find_elements_by_xpath(xpath)
                 else:
@@ -129,41 +137,31 @@ class BugThread(BaseTread):
                     for link in link_list:
                         if GetValueTypeEnum.Attribute.name.__eq__(crawlingRule.get_value_type):
                             link_data = link.get_attribute(crawlingRule.html_attr)
-                        id = self.crawlingDataLinkService.save(pre_id, link_data)
-                        if link_data:
-                            links.append(link_data)
+                            id = self.crawlingDataLinkService.save(pre_id, link_data)
+                            if link_data:
+                                links.append(link_data)
 
                     if crawling_rule_sub_list and crawling_rule_sub_list.__sizeof__() > 0:
-                        for l in links:
-                            for crawlingRuleSub in crawling_rule_sub_list:
-                                crawlingRuleSub.access_url = l
-                                bug = BugThread(crawlingRuleSub)
-                                bug.start()
-                                # self.__crawling(crawling_rule_sub, pre_id)
+                        for url in links:
+                            crawlingRuleSub = CrawlingRule()
+                            crawlingRuleSub.xpath_type = XpathTypeEnum.Entrance.name
+                            crawlingRuleSub.access_url = url
+                            crawlingRuleSub.is_parameter = YNEnum.N.name
+                            crawlingRuleSub.code = crawlingRule.code
+                            bug = BugThread(crawlingRuleSub, pre_id)
+                            bug.start()
+                            # for crawlingRuleSub in crawling_rule_sub_list:
+                            #     crawlingRuleSub.access_url = url
+                            #     bug = BugThread(crawlingRuleSub)
+                            #     bug.start()
 
     def test(self):
         self.browser.get('https://777score.ph/')
-        list = self.browser.find_elements_by_xpath('//*[@id="categories"]/li[48]')
-        for i in list:
-            print("------" + i.text)
-            uls = i.find_elements_by_xpath('ul/li/a')
-            for u in uls:
-                print(u.get_attribute('title'))
-                url = u.get_attribute('href')
-                self.browser.get(url)
-                teams = self.browser.find_elements_by_xpath(
-                    '//*[@id="dataContainer"]/div[1]/span/table/tbody/tr/td[2]/a')
-                for team in teams:
-                    print(team.text)
-
-                sleep(3)
-                self.browser.back()
-                sleep(3)
 
 
 if __name__ == '__main__':
     c = CrawlingRuleService()
     cr = c.load_by_code(1)
     bug = BugThread(cr)
-    bug.start()
-    # bug.test()
+    # bug.start()
+    bug.test()
