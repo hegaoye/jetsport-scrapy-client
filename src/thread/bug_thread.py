@@ -19,13 +19,13 @@ class BugThread(BaseTread):
     """
 
     def __init__(self, crawlingRule=None, pre_id=None):
-        threading.Thread.__init__(self)
         self.browser = Browser().get_brower()
         self.crawlingRule = crawlingRule
         self.crawlingRuleService = CrawlingRuleService()
         self.crawlingRuleDataService = CrawlingRuleDataService()
         self.crawlingDataLinkService = CrawlingRuleDataLinkService()
         self.pre_id = pre_id
+        threading.Thread.__init__(self)
 
     def run(self):
         """
@@ -47,7 +47,6 @@ class BugThread(BaseTread):
             pass
 
         self.stop()
-
 
     def __crawling(self, crawlingRule, pre_id=None, element=None):
         """
@@ -163,5 +162,5 @@ if __name__ == '__main__':
     c = CrawlingRuleService()
     cr = c.load_by_code(1)
     bug = BugThread(cr)
-    # bug.start()
-    bug.test()
+    bug.start()
+    # bug.test()
