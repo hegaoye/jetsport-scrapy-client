@@ -38,10 +38,12 @@ class SettingKeyEnum(Enum):
     拉取云端指令的频率
     """
     PullCommandFrequce = "PullCommandFrequce"
+
     """
     拉取指令地址
     """
     PullCommandUrl = "PullCommandUrl"
+
     """
     推送缓存数据的频率 单位 秒
     """
