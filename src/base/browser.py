@@ -11,10 +11,11 @@ class Browser:
 
     def __init__(self):
         chrome_options = Options()
-        chrome_options.add_argument("--headless")
-        chrome_options.add_argument('--disable-gpu')
-        chrome_options.add_argument('--no-sandbox')
-        self.brower = webdriver.Chrome(executable_path=BROWSER_PATH, chrome_options=chrome_options)
+        # chrome_options.add_argument("--headless")
+        # chrome_options.add_argument('--disable-gpu')
+        # chrome_options.add_argument('--no-sandbox')
+        self.browser = webdriver.Chrome(executable_path=BROWSER_PATH, chrome_options=chrome_options)
+        # self.browser.fullscreen_window()
 
     def get_brower(self):
-        return self.brower
+        return self.browser

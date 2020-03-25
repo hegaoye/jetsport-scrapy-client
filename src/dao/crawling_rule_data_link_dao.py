@@ -18,6 +18,6 @@ class CrawlingRuleDataLinkDao(Singleton):
     def delete(self, id) -> int:
         return CrawlingRuleDataLink.delete_by_id(id)
 
-    def insert(self, crawlingRuleDataLink) -> None:
-        CrawlingRuleDataLink.create(crawling_rule_code=crawlingRuleDataLink.crawling_rule_code,
-                                    link=crawlingRuleDataLink.link)
+    def insert(self, crawlingRuleDataLink) -> int:
+        return CrawlingRuleDataLink.insert(crawling_rule_code=crawlingRuleDataLink.crawling_rule_code,
+                                           link=crawlingRuleDataLink.link).execute()
