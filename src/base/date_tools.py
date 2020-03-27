@@ -2,11 +2,15 @@
 import datetime
 
 
-def getYesterday():
+def getYesterday() -> str:
+    """
+    获取昨天
+    :return: 昨天
+    """
     today = datetime.date.today()
     oneday = datetime.timedelta(days=1)
     yesterday = today - oneday
-    return yesterday
+    return str(yesterday)
 
 
 if __name__ == '__main__':

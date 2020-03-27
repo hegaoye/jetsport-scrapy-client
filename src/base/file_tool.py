@@ -1,11 +1,17 @@
 # coding=utf-8
 import os
 import shutil
+import ssl
+from urllib import request
 
 from src.base.singleton import Singleton
 
 
 class FileTool(Singleton):
+    """
+    文件处理工具类
+    """
+
     def create_file(self, path):
         """
         create a empty file
@@ -114,11 +120,21 @@ class FileTool(Singleton):
 
         return all_file
 
-    def python3_cmd(self, pyfile):
-        """
-        configure python3 commands like 'python3 -u /home/workspace/xx.py'
-        :param pyfile: the file absolute path /home/workspace/xxx.py
-        :return: cmd to run the python file
-        """
+    def download_file(self, source_url, save_path) -> str:
+        context = ssl._create_unverified_context()
+        # ssl._create_default_https_context = ssl._create_unverified_context
+        headers = {
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.99 Safari/537.36"}
+        req = request.Request(source_url, headers=headers)
+        r = request.urlopen(req, context=context)
+        data = r.read()
+        f = open(save_path, 'wb')
+        f.write(data)
+        f.close()
 
-        return "python3 -u " + pyfile
+
+if __name__ == '__main__':
+    file_tool = FileTool()
+    source_url = "https://images.sportstat24.com/resized/16/16/team/28537e80c69879fc14ed9acb49da10da96190212368a4370c797c00b86550c1e.png"
+    save_path = "/Users/chendehui/workspaces/jetsport-scrapy-client/a.png"
+    file_tool.download_file(source_url, save_path)
