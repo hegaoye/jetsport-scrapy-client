@@ -126,11 +126,11 @@ class FileTool(Singleton):
         headers = {
             "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.99 Safari/537.36"}
         req = request.Request(source_url, headers=headers)
-        r = request.urlopen(req, context=context)
-        data = r.read()
-        f = open(save_path, 'wb')
-        f.write(data)
-        f.close()
+        response = request.urlopen(req, context=context)
+        data = response.read()
+        file = open(save_path, 'wb')
+        file.write(data)
+        file.close()
 
 
 if __name__ == '__main__':
