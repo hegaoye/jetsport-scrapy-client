@@ -10,6 +10,9 @@ class CrawlingRuleDataService(BaseService):
     def load(self, id) -> CrawlingRuleData:
         return self.crawlingRuleDataDao.load(id)
 
+    def load_by_value(self, value) -> CrawlingRuleData:
+        return self.crawlingRuleDataDao.load_by_value(value)
+
     def saveOrModify(self, code, parameter_code, parameter_name, data, pre_id) -> int:
         """
         保存更新
@@ -25,6 +28,5 @@ class CrawlingRuleDataService(BaseService):
         id = self.crawlingRuleDataDao.insert(crawling_rule_data)
         return id
 
-
-def list(self, crawling_rule_code) -> list:
-    return self.crawlingRuleDataDao.list(crawling_rule_code)
+    def list(self, crawling_rule_code) -> list:
+        return self.crawlingRuleDataDao.list(crawling_rule_code)

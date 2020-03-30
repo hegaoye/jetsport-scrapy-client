@@ -38,9 +38,9 @@ class BugThread(BaseTread):
             self.__crawling(self.crawlingRule, self.pre_id)
             # 拼装数据 使用多线程进行
 
-        except:
+        except Exception as e:
             # todo 增加异常判断，规则判断
-            pass
+            print(e)
 
         try:
             self.browser.close()
@@ -85,6 +85,10 @@ class BugThread(BaseTread):
                             pass
 
                         # 存储爬取的数据
+                        crawlingRuleData = self.crawlingRuleDataService.load_by_value(data)
+                        if crawlingRuleData:
+                            continue
+
                         parameter = self.parameterService.load(crawlingRule.parameter_code)
                         id = self.crawlingRuleDataService.saveOrModify(crawlingRule.parameter_code, crawlingRule.code,
                                                                        parameter.name,
