@@ -14,7 +14,11 @@ class TaskPoolDao(Singleton):
         :param state: 状态机
         :return: TaskPool
         """
-        return TaskPool.select().where(TaskPool.state == state).order_by(TaskPool.ordinal.asc())
+        list = TaskPool.select().where(TaskPool.state == state).order_by(TaskPool.ordinal.asc())
+        if list and len(list) > 0:
+            return list.get()
+        else:
+            return None
 
     def load_by_crawling_rule_code(self, crawling_rule_code) -> TaskPool:
         """
@@ -48,14 +52,3 @@ class TaskPoolDao(Singleton):
         TaskPool.create(code=taskPool.code, crawling_rule_code=taskPool.crawling_rule_code,
                         state=taskPool.state, ordinal=taskPool.ordinal, push_frequce=taskPool.push_frequce,
                         task_url=taskPool.task_url, header=taskPool.header)
-
-
-if __name__ == '__main__':
-    t = TaskPool()
-    t.code = "2222"
-    # TaskPoolDao().insert(t)
-    tt = TaskPool.get(code="aaa")
-    print(tt.code, tt.state, tt.header)
-    ts = TaskPool.select().where(TaskPool.code != None)
-    for tobj in ts:
-        print(tobj.code, tobj.state)

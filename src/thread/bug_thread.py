@@ -6,6 +6,7 @@ from src.base.browser import Browser
 from src.base.enum.get_value_type_enum import GetValueTypeEnum
 from src.base.enum.xpath_type_enum import XpathTypeEnum
 from src.base.enum.y_n_enum import YNEnum
+from src.base.log4py import logger
 from src.entity.crawling_rule import CrawlingRule
 from src.service.crawling_data_link_service import CrawlingRuleDataLinkService
 from src.service.crawling_rule_data_service import CrawlingRuleDataService
@@ -40,13 +41,13 @@ class BugThread(BaseTread):
 
         except Exception as e:
             # todo 增加异常判断，规则判断
-            print(e)
+            logger.error(e)
 
         try:
             self.browser.close()
             self.browser.quit()
-        except:
-            pass
+        except Exception as e:
+            logger.error(e)
 
         self.stop()
 
@@ -67,11 +68,7 @@ class BugThread(BaseTread):
         # 如果规则爬取的数据是接口的参数的则爬取
         if YNEnum.Y.name.__eq__(is_parameter):
             if XpathTypeEnum.Text.name.__eq__(xpath_type):
-                if not element:
-                    elements = self.browser.find_elements_by_xpath(xpath)
-                else:
-                    elements = element.find_elements_by_xpath(xpath)
-
+                elements = self.element_list(element, xpath)
                 if elements and len(elements) > 0:
                     for element in elements:
                         if GetValueTypeEnum.Text.name.__eq__(crawlingRule.get_value_type):
@@ -118,11 +115,7 @@ class BugThread(BaseTread):
 
             elif XpathTypeEnum.Element.name.__eq__(xpath_type):
                 # 判断元素
-                if not element:
-                    sub_elements = self.browser.find_elements_by_xpath(xpath)
-                else:
-                    sub_elements = element.find_elements_by_xpath(xpath)
-
+                sub_elements = self.element_list(element, xpath)
                 if sub_elements and len(sub_elements) > 0:
                     for sub_element in sub_elements:
                         for crawlingRuleSub in crawling_rule_sub_list:
@@ -131,11 +124,7 @@ class BugThread(BaseTread):
 
             elif XpathTypeEnum.Click.name.__eq__(xpath_type):
                 # 点击事件判断
-                if not element:
-                    click_elements = self.browser.find_elements_by_xpath(xpath)
-                else:
-                    click_elements = element.find_elements_by_xpath(xpath)
-
+                click_elements = self.element_list(element, xpath)
                 if click_elements:
                     for click_element in click_elements:
                         click_element.click()
@@ -147,11 +136,7 @@ class BugThread(BaseTread):
 
             elif XpathTypeEnum.Link.name.__eq__(xpath_type):
                 # 爬取并存储链接路径
-                if not element:
-                    link_list = self.browser.find_elements_by_xpath(xpath)
-                else:
-                    link_list = element.find_elements_by_xpath(xpath)
-
+                link_list = self.element_list(element, xpath)
                 if link_list and len(link_list) > 0:
                     links = []
                     for link in link_list:
@@ -171,6 +156,22 @@ class BugThread(BaseTread):
                             bug = BugThread(crawlingRuleSub, pre_id)
                             bug.start()
                             sleep(crawlingRule.frequce)
+
+    def element_list(self, element, xpath) -> list:
+        """
+        获取元素集合
+        :param element: 元素
+        :param xpath: xpath
+        :return: list
+        """
+        if not element:
+            # 浏览器 定位 元素
+            elements = self.browser.find_elements_by_xpath(xpath)
+        else:
+            # 相对路径查找 xpath
+            elements = element.find_elements_by_xpath(xpath)
+
+        return elements
 
 
 if __name__ == '__main__':
