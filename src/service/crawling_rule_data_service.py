@@ -10,13 +10,14 @@ class CrawlingRuleDataService(BaseService):
     def load(self, id) -> CrawlingRuleData:
         return self.crawlingRuleDataDao.load(id)
 
-    def saveOrModify(self, code, parameter_code, data, pre_id) -> int:
+    def saveOrModify(self, code, parameter_code, parameter_name, data, pre_id) -> int:
         """
         保存更新
         :param crawlingRuleData: 对象
         """
         crawling_rule_data = CrawlingRuleData()
         crawling_rule_data.parameter_code = parameter_code
+        crawling_rule_data.parameter_name = parameter_name
         crawling_rule_data.crawling_rule_code = code
         crawling_rule_data.value = data
         if pre_id:

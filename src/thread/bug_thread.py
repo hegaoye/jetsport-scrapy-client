@@ -10,6 +10,7 @@ from src.entity.crawling_rule import CrawlingRule
 from src.service.crawling_data_link_service import CrawlingRuleDataLinkService
 from src.service.crawling_rule_data_service import CrawlingRuleDataService
 from src.service.crawling_rule_service import CrawlingRuleService
+from src.service.parameter_serivce import ParameterService
 from src.thread.base_thread import BaseTread
 
 
@@ -25,6 +26,7 @@ class BugThread(BaseTread):
         self.crawlingRuleService = CrawlingRuleService()
         self.crawlingRuleDataService = CrawlingRuleDataService()
         self.crawlingDataLinkService = CrawlingRuleDataLinkService()
+        self.parameterService = ParameterService()
         self.pre_id = pre_id
 
     def run(self):
@@ -83,7 +85,9 @@ class BugThread(BaseTread):
                             pass
 
                         # 存储爬取的数据
+                        parameter = self.parameterService.load(crawlingRule.parameter_code)
                         id = self.crawlingRuleDataService.saveOrModify(crawlingRule.parameter_code, crawlingRule.code,
+                                                                       parameter.name,
                                                                        data, pre_id)
 
                         if crawling_rule_sub_list and len(crawling_rule_sub_list) > 0:
