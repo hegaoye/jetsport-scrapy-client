@@ -176,6 +176,6 @@ class BugThread(BaseTread):
 
 if __name__ == '__main__':
     c = CrawlingRuleService()
-    cr = c.load_by_code(14)
+    cr = c.load_by_code(19)
     bug = BugThread(cr)
     bug.start()
