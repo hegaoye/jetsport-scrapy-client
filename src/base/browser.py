@@ -12,13 +12,13 @@ class Browser:
     def __init__(self):
         chrome_options = Options()
         # 浏览器不提供可视化页面
-        chrome_options.add_argument('--headless')
+        # chrome_options.add_argument('--headless')
         # 谷歌文档提到需要加上这个属性来规避bug
         chrome_options.add_argument('--disable-gpu')
         # 以最高权限运行
         chrome_options.add_argument('--no-sandbox')
         # 启动就最大化
-        chrome_options.add_argument('--start-maximized')
+        # chrome_options.add_argument('--start-maximized')
         # 以下用于有界面时配置项
         # 隐藏滚动条, 应对一些特殊页面
         # chrome_options.add_argument('--hide-scrollbars')
