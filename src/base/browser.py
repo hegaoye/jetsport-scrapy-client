@@ -18,7 +18,7 @@ class Browser:
         # 以最高权限运行
         chrome_options.add_argument('--no-sandbox')
         # 启动就最大化
-        # chrome_options.add_argument('--start-maximized')
+        chrome_options.add_argument('--start-maximized')
         # 以下用于有界面时配置项
         # 隐藏滚动条, 应对一些特殊页面
         # chrome_options.add_argument('--hide-scrollbars')
