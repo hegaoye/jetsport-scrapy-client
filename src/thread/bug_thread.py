@@ -81,7 +81,7 @@ class BugThread(BaseTread):
                             # todo 下载
                             pass
 
-                        # 存储爬取的数据
+                        # 存储爬取的数据 todo 重复判断可能阻碍其他的数据的进入，需要进一步参数判断
                         crawlingRuleData = self.crawlingRuleDataService.load_by_value(data)
                         if crawlingRuleData:
                             continue
