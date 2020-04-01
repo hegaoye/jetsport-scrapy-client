@@ -59,117 +59,167 @@ class BugThread(BaseTread):
         """
         爬取网页数据
         """
-        is_parameter = crawlingRule.is_parameter
         xpath = crawlingRule.xpath
         xpath_type = crawlingRule.xpath_type
-        # access_url = crawlingRule.access_url
-        # 如果有进入入口先打开页面
-        # if access_url and str(access_url).startswith('http'):
-        #     self.browser.get(access_url)
-
+        html_attr = crawlingRule.html_attr
+        crawling_rule_code = crawlingRule.code
+        frequce = crawlingRule.frequce
         crawling_rule_sub_list = self.crawlingRuleService.list_sub(crawlingRule.code)
 
-        # 如果规则爬取的数据是接口的参数的则爬取
-        if YNEnum.Y.name.__eq__(is_parameter):
-            if XpathTypeEnum.Text.name.__eq__(xpath_type):
-                elements = self.element_list(element, xpath)
-                if elements and len(elements) > 0:
-                    for element in elements:
-                        if GetValueTypeEnum.Text.name.__eq__(crawlingRule.get_value_type):
-                            # 文本方式获取数据
-                            text = element.text
-                        elif GetValueTypeEnum.Attribute.name.__eq__(crawlingRule.get_value_type):
-                            # 属性方式获取数据
-                            text = element.get_attribute(crawlingRule.html_attr)
-                        elif GetValueTypeEnum.Download.name.__eq__(crawlingRule.get_value_type):
-                            # todo 下载
-                            pass
+        if XpathTypeEnum.Entrance.name.__eq__(xpath_type):
+            self.__entrance(crawlingRule.access_url, crawling_rule_sub_list)
+        elif XpathTypeEnum.Element.name.__eq__(xpath_type):
+            self.__element(xpath, crawling_rule_sub_list, pre_id, element)
+        elif XpathTypeEnum.Click.name.__eq__(xpath_type):
+            self.__click(xpath, frequce, crawling_rule_sub_list, pre_id, element)
+        elif XpathTypeEnum.Link.name.__eq__(xpath_type):
+            self.__link(xpath, frequce, crawling_rule_sub_list, html_attr,
+                        crawling_rule_code, pre_id, element)
+        elif XpathTypeEnum.Text.name.__eq__(xpath_type):
+            self.__text(crawling_rule_code, crawlingRule.parameter_code, xpath, crawlingRule.ignore_value,
+                        html_attr, crawlingRule.get_value_type, crawling_rule_sub_list, pre_id, element)
+        elif XpathTypeEnum.Image.name.__eq__(xpath_type):
+            pass
+        elif XpathTypeEnum.Video.name.__eq__(xpath_type):
+            pass
+        elif XpathTypeEnum.Audio.name.__eq__(xpath_type):
+            pass
 
-                        # 忽略字符内容判断
-                        ignore = crawlingRule.ignore_value
-                        if ignore:
-                            ignore = str(ignore)
-                            ignores = ignore[:-1].split(",") if ignore.endswith(",") else ignore.split(",")
-                            if str(text) in ignores:
-                                continue
+    def __entrance(self, access_url, crawling_rule_list):
+        """
+        打开入口
+        :param access_url: 入口地址
+        :param crawling_rule_list: 第一级 规则集合
+        """
+        if access_url and crawling_rule_list and len(crawling_rule_list) > 0:
+            # 打开连接
+            self.browser.get(access_url)
 
-                        # 存储爬取的数据 todo 重复判断可能阻碍其他的数据的进入，需要进一步参数判断
-                        crawling_rule_data_load = self.crawlingRuleDataService.load_by_value(text)
-                        if crawling_rule_data_load:
-                            continue
+            # 循环下级规则
+            pre_id = str(uuid.uuid1()).replace("-", "")
+            self.__crawling_rule_list(crawling_rule_list, pre_id)
 
-                        parameter = self.parameterService.load(crawlingRule.parameter_code)
-                        crawlingRuleData = self.crawlingRuleDataService.saveOrModify(parameter.code, crawlingRule.code,
-                                                                                     parameter.name, text, pre_id)
+    def __element(self, xpath, crawling_rule_list, pre_id, element):
+        """
+        页面html标签元素进行迭代
+        :param xpath: xpath
+        :param crawling_rule_list: 子集规则
+        :param pre_id: 上级id
+        :param element: html标签元素
+        """
+        elements = self.__element_list(element, xpath)
+        if elements and len(elements) > 0:
+            for sub_element in elements:
+                self.__crawling_rule_list(crawling_rule_list, pre_id, sub_element)
 
-                        if crawling_rule_sub_list and len(crawling_rule_sub_list) > 0:
-                            # 下级数据关联
-                            for crawlingRuleSub in crawling_rule_sub_list:
-                                # 循环爬取
-                                self.__crawling(crawlingRuleSub, crawlingRuleData.code, element)
+    def __click(self, xpath, frequce, crawling_rule_list, pre_id, element):
+        """
+        点击类型进行点击操作
+        :param xpath: xpath 点击位置
+        :param frequce: 点击后停留时间
+        :param crawling_rule_list: 下级规则集合
+        :param pre_id: 上级id
+        :param element: 元素
+        """
+        elements = self.__element_list(element, xpath)
+        if elements:
+            for click_element in elements:
+                click_element.click()
+                sleep(frequce)
+                self.__crawling_rule_list(crawling_rule_list, pre_id, click_element)
 
+    def __link(self, xpath, frequce, crawling_rule_list, html_attr, crawling_rule_code, pre_id, element):
+        """
+        链接处理
+        :param xpath:
+        :param frequce:
+        :param crawling_rule_list:
+        :param html_attr:
+        :param crawling_rule_code:
+        :param pre_id:
+        :param element:
+        :return:
+        """
+        elements = self.__element_list(element, xpath)
+        if elements and len(elements) > 0:
+            links = []
+            # todo 保存链接的必要性在哪里？
+            for link in elements:
+                link_data = link.get_attribute(html_attr)
+                id = self.crawlingDataLinkService.save(pre_id, link_data)
+                if link_data:
+                    links.append(link_data)
 
-            elif XpathTypeEnum.Image.name.__eq__(xpath_type):
-                pass
-            elif XpathTypeEnum.Video.name.__eq__(xpath_type):
-                pass
-            elif XpathTypeEnum.Audio.name.__eq__(xpath_type):
-                pass
+            if crawling_rule_list and len(crawling_rule_list) > 0:
+                for url in links:
+                    crawlingRuleSub = CrawlingRule()
+                    crawlingRuleSub.xpath_type = XpathTypeEnum.Entrance.name
+                    crawlingRuleSub.access_url = url
+                    crawlingRuleSub.is_parameter = YNEnum.N.name
+                    crawlingRuleSub.code = crawling_rule_code
+                    bug = BugThread(crawlingRuleSub, pre_id)
+                    bug.start()
+                    sleep(frequce)
 
-        elif YNEnum.N.name.__eq__(is_parameter):
-            if XpathTypeEnum.Entrance.name.__eq__(xpath_type):
-                # 入口判断
-                self.browser.get(crawlingRule.access_url)
-                if crawling_rule_sub_list and len(crawling_rule_sub_list) > 0:
-                    pre_id = str(uuid.uuid1()).replace("-", "")
-                    for crawlingRuleSub in crawling_rule_sub_list:
-                        self.__crawling(crawlingRuleSub, pre_id, element)
+    def __text(self, crawling_rule_code, parameter_code, xpath, ignore_value,
+               html_attr, value_type, crawling_rule_list, pre_id, element):
+        """
+        爬取文本内容
+        :param crawling_rule_code: 规则编码
+        :param parameter_code: 参数编码
+        :param xpath: 爬取文本的xpath
+        :param ignore_value: 忽略的值
+        :param html_attr: 获取text html的具体属性
+        :param value_type: 取值类型
+        :param crawling_rule_list: 子规则集合
+        :param pre_id: 上级id
+        :param element: html 标签元素
+        """
+        elements = self.__element_list(element, xpath)
+        if elements and len(elements) > 0:
+            for element in elements:
+                if GetValueTypeEnum.Text.name.__eq__(value_type):
+                    text = element.text
+                elif GetValueTypeEnum.Attribute.name.__eq__(value_type):
+                    text = element.get_attribute(html_attr)
+                elif GetValueTypeEnum.Download.name.__eq__(value_type):
+                    pass
 
-            elif XpathTypeEnum.Element.name.__eq__(xpath_type):
-                # 判断元素
-                sub_elements = self.element_list(element, xpath)
-                if sub_elements and len(sub_elements) > 0:
-                    for sub_element in sub_elements:
-                        for crawlingRuleSub in crawling_rule_sub_list:
-                            self.__crawling(crawlingRuleSub, pre_id, sub_element)
+                # 忽略字符内容判断
+                if self.__is_ignore(ignore_value, text):
+                    continue
 
+                # 存储爬取的数据 todo 重复判断可能阻碍其他的数据的进入，需要进一步参数判断
+                crawling_rule_data_load = self.crawlingRuleDataService.load_by_value(text)
+                if not crawling_rule_data_load:
+                    parameter = self.parameterService.load(parameter_code)
+                    crawlingRuleData = self.crawlingRuleDataService.saveOrModify(parameter.code, crawling_rule_code,
+                                                                                 parameter.name, text, pre_id)
 
-            elif XpathTypeEnum.Click.name.__eq__(xpath_type):
-                # 点击事件判断
-                click_elements = self.element_list(element, xpath)
-                if click_elements:
-                    for click_element in click_elements:
-                        click_element.click()
-                        sleep(crawlingRule.frequce)
-                        if crawling_rule_sub_list and len(crawling_rule_sub_list) > 0:
-                            for crawlingRuleSub in crawling_rule_sub_list:
-                                self.__crawling(crawlingRuleSub, pre_id, click_element)
+                sub_code = crawling_rule_data_load.code if crawling_rule_data_load else crawlingRuleData.code
+                self.__crawling_rule_list(crawling_rule_list, sub_code, element)
 
+    def __crawling_rule_list(self, crawling_rule_list, pre_id=None, element=None):
+        if crawling_rule_list and len(crawling_rule_list) > 0:
+            for crawlingRuleSub in crawling_rule_list:
+                self.__crawling(crawlingRuleSub, pre_id, element)
 
-            elif XpathTypeEnum.Link.name.__eq__(xpath_type):
-                # 爬取并存储链接路径
-                link_list = self.element_list(element, xpath)
-                if link_list and len(link_list) > 0:
-                    links = []
-                    for link in link_list:
-                        if GetValueTypeEnum.Attribute.name.__eq__(crawlingRule.get_value_type):
-                            link_data = link.get_attribute(crawlingRule.html_attr)
-                            id = self.crawlingDataLinkService.save(pre_id, link_data)
-                            if link_data:
-                                links.append(link_data)
+    def __is_ignore(self, ignore_value, text) -> bool:
+        """
+        判断是否需要忽略值
+        :param ignore_value: 需要忽略的值，逗号分隔
+        :param text: 需要被忽略的文本
+        :return: True/False
+        """
+        if ignore_value:
+            ignore_value = str(ignore_value)
+            ignores = ignore_value[:-1].split(",") if ignore_value.endswith(",") else ignore_value.split(",")
+            if str(text) in ignores:
+                return True
 
-                    if crawling_rule_sub_list and len(crawling_rule_sub_list) > 0:
-                        for url in links:
-                            crawlingRuleSub = CrawlingRule()
-                            crawlingRuleSub.xpath_type = XpathTypeEnum.Entrance.name
-                            crawlingRuleSub.access_url = url
-                            crawlingRuleSub.is_parameter = YNEnum.N.name
-                            crawlingRuleSub.code = crawlingRule.code
-                            bug = BugThread(crawlingRuleSub, pre_id)
-                            bug.start()
-                            sleep(crawlingRule.frequce)
+        return False
 
-    def element_list(self, element, xpath) -> list:
+    def __element_list(self, element, xpath) -> list:
         """
         获取元素集合
         :param element: 元素
