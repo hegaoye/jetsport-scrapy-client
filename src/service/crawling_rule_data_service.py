@@ -30,3 +30,6 @@ class CrawlingRuleDataService(BaseService):
 
     def list(self, crawling_rule_code) -> list:
         return self.crawlingRuleDataDao.list(crawling_rule_code)
+
+    def list_by_parameter_code(self, parameter_code) -> list:
+        return self.crawlingRuleDataDao.list_by_parameter_code(parameter_code)

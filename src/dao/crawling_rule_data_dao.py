@@ -35,3 +35,6 @@ class CrawlingRuleDataDao(Singleton):
         if list and len(list) > 0:
             return list.get()
         return None
+
+    def list_by_parameter_code(self, parameter_code) -> list:
+        return CrawlingRuleData.select().where(CrawlingRuleData.parameter_code == parameter_code)
