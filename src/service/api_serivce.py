@@ -10,3 +10,6 @@ class ApiService(BaseService):
 
     def load(self, code) -> Api:
         return self.apiDao.load(code)
+
+    def list(self) -> list:
+        return self.apiDao.list()

@@ -1,5 +1,4 @@
 # coding=utf-8
-from src.base.enum.parameter_type_enum import ParameterTypeEnum
 from src.service.api_serivce import ApiService
 from src.service.crawling_rule_data_service import CrawlingRuleDataService
 from src.service.crawling_rule_service import CrawlingRuleService
@@ -25,24 +24,18 @@ class ConstructDataThread(BaseTread):
     def build_data(self):
         """
         构造接口数据
-        1.查询参数数据
-        2.查询规则参数值
-        3.构造结构
+        1.查询接口列表
+        2.查询参数列表
+        3.查询参数数据
+        4.构造结构
         """
-        crawling_rule_data_list = self.crawlingRuleDataService.list(self.crawlingRule.code)
-        if crawling_rule_data_list and crawling_rule_data_list.__sizeof__() > 0:
-            for crawlingRuleData in crawling_rule_data_list:
-                parameter = self.parameterService.load(crawlingRuleData.parameter_code)
-                name = parameter.name
-                value = crawlingRuleData.value
+        # 1.查询接口列表
+        api_list = self.apiService.list()
+        # 2.查询参数列表
 
-                if ParameterTypeEnum.Map.name.__eq__(parameter.parameter_type):
-                    data = {}
-                    data[name] = value
-                elif ParameterTypeEnum.List.name.__eq__(parameter.parameter_type):
-                    pass
-                elif ParameterTypeEnum.Uri.name.__eq__(parameter.parameter_type):
-                    pass
+        # 3.查询参数数据
+
+        # 4.构造结构
 
 
 if __name__ == '__main__':
