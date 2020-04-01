@@ -1,4 +1,5 @@
 # coding=utf-8
+
 from src.base.singleton import Singleton
 from src.entity.crawling_rule import CrawlingRule
 
@@ -43,3 +44,11 @@ class CrawlingRuleDao(Singleton):
         :return: list
         """
         return CrawlingRule.select().where(CrawlingRule.pre_code == pre_code).order_by(CrawlingRule.ordinal.asc())
+
+
+if __name__ == '__main__':
+    crawlingRule = CrawlingRuleDao().load_by_code(1)
+    ignore = crawlingRule.ignore_value
+    i = ignore.split(",") if not str(ignore).endswith(",") else ignore[:-1].split(",")
+    print(i)
+    print('all' in i)
