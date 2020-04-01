@@ -1,4 +1,6 @@
 # coding=utf-8
+import uuid
+
 from src.base.singleton import Singleton
 from src.entity.parameter import Parameter
 

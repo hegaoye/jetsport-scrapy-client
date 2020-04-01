@@ -1,4 +1,6 @@
 # coding=utf-8
+import uuid
+
 from src.base.singleton import Singleton
 from src.entity.crawling_rule_data import CrawlingRuleData
 
@@ -22,7 +24,7 @@ class CrawlingRuleDataDao(Singleton):
         return CrawlingRuleData.update(value=value).where(CrawlingRuleData.crawling_rule_code == crawling_rule_code)
 
     def insert(self, crawlingRuleData) -> int:
-        return CrawlingRuleData.insert(pre_id=crawlingRuleData.pre_id,
+        return CrawlingRuleData.insert(code=str(uuid.uuid1()).replace("-", ""), pre_id=crawlingRuleData.pre_id,
                                        crawling_rule_code=crawlingRuleData.crawling_rule_code,
                                        value=crawlingRuleData.value, parameter_name=crawlingRuleData.parameter_name,
                                        parameter_code=crawlingRuleData.parameter_code).execute()

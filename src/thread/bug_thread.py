@@ -1,5 +1,6 @@
 # coding=utf-8
 import threading
+import uuid
 from time import sleep
 
 from src.base.browser import Browser
@@ -76,10 +77,10 @@ class BugThread(BaseTread):
                     for element in elements:
                         if GetValueTypeEnum.Text.name.__eq__(crawlingRule.get_value_type):
                             # 文本方式获取数据
-                            data = element.text
+                            text = element.text
                         elif GetValueTypeEnum.Attribute.name.__eq__(crawlingRule.get_value_type):
                             # 属性方式获取数据
-                            data = element.get_attribute(crawlingRule.html_attr)
+                            text = element.get_attribute(crawlingRule.html_attr)
                         elif GetValueTypeEnum.Download.name.__eq__(crawlingRule.get_value_type):
                             # todo 下载
                             pass
@@ -89,24 +90,23 @@ class BugThread(BaseTread):
                         if ignore:
                             ignore = str(ignore)
                             ignores = ignore[:-1].split(",") if ignore.endswith(",") else ignore.split(",")
-                            if str(data) in ignores:
+                            if str(text) in ignores:
                                 continue
 
                         # 存储爬取的数据 todo 重复判断可能阻碍其他的数据的进入，需要进一步参数判断
-                        crawlingRuleData = self.crawlingRuleDataService.load_by_value(data)
-                        if crawlingRuleData:
+                        crawling_rule_data_load = self.crawlingRuleDataService.load_by_value(text)
+                        if crawling_rule_data_load:
                             continue
 
                         parameter = self.parameterService.load(crawlingRule.parameter_code)
-                        id = self.crawlingRuleDataService.saveOrModify(crawlingRule.parameter_code, crawlingRule.code,
-                                                                       parameter.name,
-                                                                       data, pre_id)
+                        crawlingRuleData = self.crawlingRuleDataService.saveOrModify(parameter.code, crawlingRule.code,
+                                                                                     parameter.name, text, pre_id)
 
                         if crawling_rule_sub_list and len(crawling_rule_sub_list) > 0:
                             # 下级数据关联
                             for crawlingRuleSub in crawling_rule_sub_list:
                                 # 循环爬取
-                                self.__crawling(crawlingRuleSub, id, element)
+                                self.__crawling(crawlingRuleSub, crawlingRuleData.code, element)
 
 
             elif XpathTypeEnum.Image.name.__eq__(xpath_type):
@@ -121,6 +121,7 @@ class BugThread(BaseTread):
                 # 入口判断
                 self.browser.get(crawlingRule.access_url)
                 if crawling_rule_sub_list and len(crawling_rule_sub_list) > 0:
+                    pre_id = str(uuid.uuid1()).replace("-", "")
                     for crawlingRuleSub in crawling_rule_sub_list:
                         self.__crawling(crawlingRuleSub, pre_id, element)
 
