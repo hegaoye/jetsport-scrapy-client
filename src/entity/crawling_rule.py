@@ -11,7 +11,7 @@ class CrawlingRule(BaseModel):
     # 编码
     code = PrimaryKeyField()
     # 上级编码
-    pre_code = CharField(max_length=64)
+    pre_code = CharField(max_length=64, null=True)
     # 接口编码
     api_code = CharField(max_length=64)
     # 参数编码
@@ -23,11 +23,13 @@ class CrawlingRule(BaseModel):
     # 获取值方法
     get_value_type = CharField(max_length=16)
     # 取值属性名
-    html_attr = CharField(max_length=128)
+    html_attr = CharField(max_length=128, null=True)
+    # 忽略值 数组类型
+    ignore_value = CharField(max_length=128, null=True)
     # 入口url
     access_url = CharField(max_length=256, null=True)
     # 爬取频率
-    frequce = IntegerField()
+    frequce = IntegerField(default=0)
     # 是否是参数规则 Y 是，参数规则则映射接口的参数 , N 否，不是参数规则，则仅用于打开网址，或者点击操作等规则
     is_parameter = CharField(max_length=8)
     # 排序

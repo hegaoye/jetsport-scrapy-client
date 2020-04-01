@@ -9,7 +9,7 @@ from src.thread.base_thread import BaseTread
 
 class ConstructDataThread(BaseTread):
     """
-    拉取命令多线程，保持单例模式，禁止多线程跑多个实例导致指令执行的混乱
+    构造用于推送的数据，保持单例模式，禁止多线程跑多个实例导致指令执行的混乱
     """
 
     def __init__(self, crawlingRule):
