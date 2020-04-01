@@ -46,14 +46,14 @@ class BugThread(BaseTread):
 
         try:
             self.browser.close()
-            logger.info('关闭浏览器-' + self.crawlingRule.code)
+            logger.info('关闭浏览器-' + str(self.crawlingRule.code))
             self.browser.quit()
-            logger.info('退出浏览器-' + self.crawlingRule.code)
+            logger.info('退出浏览器-' + str(self.crawlingRule.code))
         except Exception as e:
             logger.error(e)
 
         self.stop()
-        logger.info('退出爬虫-' + self.crawlingRule.code)
+        logger.info('退出爬虫-' + str(self.crawlingRule.code))
 
     def __crawling(self, crawlingRule, pre_id=None, element=None):
         """
