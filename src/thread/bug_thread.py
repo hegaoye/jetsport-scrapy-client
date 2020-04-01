@@ -85,10 +85,12 @@ class BugThread(BaseTread):
                             pass
 
                         # 忽略字符内容判断
-                        ignore = str(crawlingRule.ignore_value)
-                        ignores = ignore[:-1].split(",") if ignore.endswith(",") else ignore.split(",")
-                        if str(data) in ignores:
-                            continue
+                        ignore = crawlingRule.ignore_value
+                        if ignore:
+                            ignore = str(ignore)
+                            ignores = ignore[:-1].split(",") if ignore.endswith(",") else ignore.split(",")
+                            if str(data) in ignores:
+                                continue
 
                         # 存储爬取的数据 todo 重复判断可能阻碍其他的数据的进入，需要进一步参数判断
                         crawlingRuleData = self.crawlingRuleDataService.load_by_value(data)
