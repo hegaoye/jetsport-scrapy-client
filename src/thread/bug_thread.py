@@ -62,11 +62,6 @@ class BugThread(BaseTread):
         is_parameter = crawlingRule.is_parameter
         xpath = crawlingRule.xpath
         xpath_type = crawlingRule.xpath_type
-        # access_url = crawlingRule.access_url
-        # 如果有进入入口先打开页面
-        # if access_url and str(access_url).startswith('http'):
-        #     self.browser.get(access_url)
-
         crawling_rule_sub_list = self.crawlingRuleService.list_sub(crawlingRule.code)
 
         # 如果规则爬取的数据是接口的参数的则爬取
@@ -95,18 +90,18 @@ class BugThread(BaseTread):
 
                         # 存储爬取的数据 todo 重复判断可能阻碍其他的数据的进入，需要进一步参数判断
                         crawling_rule_data_load = self.crawlingRuleDataService.load_by_value(text)
-                        if crawling_rule_data_load:
-                            continue
-
-                        parameter = self.parameterService.load(crawlingRule.parameter_code)
-                        crawlingRuleData = self.crawlingRuleDataService.saveOrModify(parameter.code, crawlingRule.code,
-                                                                                     parameter.name, text, pre_id)
+                        if not crawling_rule_data_load:
+                            parameter = self.parameterService.load(crawlingRule.parameter_code)
+                            crawlingRuleData = self.crawlingRuleDataService.saveOrModify(parameter.code,
+                                                                                         crawlingRule.code,
+                                                                                         parameter.name, text, pre_id)
 
                         if crawling_rule_sub_list and len(crawling_rule_sub_list) > 0:
+                            pre_id = crawlingRuleData.code if not crawling_rule_data_load else crawling_rule_data_load.code
                             # 下级数据关联
                             for crawlingRuleSub in crawling_rule_sub_list:
                                 # 循环爬取
-                                self.__crawling(crawlingRuleSub, crawlingRuleData.code, element)
+                                self.__crawling(crawlingRuleSub, pre_id, element)
 
 
             elif XpathTypeEnum.Image.name.__eq__(xpath_type):
