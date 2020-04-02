@@ -9,8 +9,8 @@ class DataCache(BaseModel):
     数据缓存实体
     """
     id = PrimaryKeyField()
-    crawling_rule_code = CharField(max_length=64)
-    task_code = CharField(max_length=64)
+    # crawling_rule_code = CharField(max_length=64)
+    # task_code = CharField(max_length=64)
     api_code = CharField(max_length=64)
     data = TextField()
 
