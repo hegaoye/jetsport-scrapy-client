@@ -96,8 +96,7 @@ class BugThread(BaseTread):
             self.browser.get(access_url)
 
             # 循环下级规则
-            pre_id = str(uuid.uuid1()).replace("-", "")
-            self.__crawling_rule_list(crawling_rule_list, pre_id)
+            self.__crawling_rule_list(crawling_rule_list)
 
     def __element(self, xpath, crawling_rule_list, pre_id, element):
         """
@@ -110,6 +109,7 @@ class BugThread(BaseTread):
         elements = self.__element_list(element, xpath)
         if elements and len(elements) > 0:
             for sub_element in elements:
+                pre_id = str(uuid.uuid1()).replace("-", "")
                 self.__crawling_rule_list(crawling_rule_list, pre_id, sub_element)
 
     def __click(self, xpath, frequce, crawling_rule_list, pre_id, element):

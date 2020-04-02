@@ -16,8 +16,6 @@ class CrawlingRule(BaseModel):
     api_code = CharField(max_length=64)
     # 参数编码
     parameter_code = CharField(max_length=64)
-    # 参数类型级别
-    parameter_level_type = CharField(max_length=64)
     # xpath
     xpath = CharField(max_length=256)
     # xpath 类型
