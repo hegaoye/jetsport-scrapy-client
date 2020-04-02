@@ -72,8 +72,8 @@ class ConstructDataThread(BaseTread):
                 # 5. 存储构造的数据到datacache中
                 self.__data_cache(api.code, api_parameter_list)
 
-                # 6.删除已经被构造的数据
-                self.crawlingRuleDataService.delete_list(id_list)
+                # 6.删除已经被构造的数据 todo 暂时注释避免数据被删，调试好后，需要解开注释
+                # self.crawlingRuleDataService.delete_list(id_list)
 
     def __data_cache(self, api_code, api_parameter_list):
         """
