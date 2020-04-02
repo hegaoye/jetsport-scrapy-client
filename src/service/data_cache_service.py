@@ -15,7 +15,7 @@ class DataCacheService(BaseService):
         self.crawlingRuleDao = CrawlingRuleDao()
         self.taskPoolDao = TaskPoolDao()
 
-    def save(self, dataCache) -> None:
+    def save(self, dataCache) -> bool:
         """
         保存一个数据到数据库
         :param dataCache: 爬取的数据

@@ -1,8 +1,12 @@
 # coding=utf-8
+import json
+
 from src.base.enum.y_n_enum import YNEnum
+from src.entity.data_cache import DataCache
 from src.service.api_serivce import ApiService
 from src.service.crawling_rule_data_service import CrawlingRuleDataService
 from src.service.crawling_rule_service import CrawlingRuleService
+from src.service.data_cache_service import DataCacheService
 from src.service.parameter_serivce import ParameterService
 from src.thread.base_thread import BaseTread
 
@@ -18,6 +22,7 @@ class ConstructDataThread(BaseTread):
         self.crawlingRuleService = CrawlingRuleService()
         self.crawlingRuleDataService = CrawlingRuleDataService()
         self.parameterService = ParameterService()
+        self.dataCacheService = DataCacheService()
 
     def run(self) -> None:
         pass
@@ -37,6 +42,7 @@ class ConstructDataThread(BaseTread):
         if api_list and len(api_list) > 0:
             for api in api_list:
                 api_parameter_list = []
+                id_list = []
                 parameter_code_list = self.parameterService.list_code(api.code, YNEnum.Y.name)
                 pre_id_list = self.crawlingRuleDataService.list_pre_id(parameter_code_list)
                 if pre_id_list and len(pre_id_list) > 0:
@@ -48,6 +54,19 @@ class ConstructDataThread(BaseTread):
                         for crawlingRuleData in crawling_rule_data_list:
                             parameter_data[crawlingRuleData.parameter_name] = crawlingRuleData.value
                             api_parameter_list.append(parameter_data)
+                            id_list.append(crawlingRuleData.id)
+
+                # 存储到 datacache中
+                dataCache = DataCache()
+                dataCache.api_code = api.code
+                dataCache.data = json.dumps(api_parameter_list)
+                self.dataCacheService.save(dataCache)
+
+                # 删除构造的数据
+                self.crawlingRuleDataService.delete_list(id_list)
+                # 清空
+                api_parameter_list.clear()
+                id_list.clear()
 
 
 if __name__ == '__main__':

@@ -47,3 +47,8 @@ class CrawlingRuleDataDao(Singleton):
 
     def list_by_pre_id(self, pre_id) -> list:
         return CrawlingRuleData.select().where(CrawlingRuleData.pre_id == pre_id)
+
+    def delete_list(self, ids):
+        if ids and len(ids) > 0:
+            for id in ids:
+                CrawlingRuleData.delete_by_id(id)

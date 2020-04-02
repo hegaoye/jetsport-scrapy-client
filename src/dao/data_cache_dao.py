@@ -1,4 +1,6 @@
 # coding=utf-8
+import json
+
 from src.entity.data_cache import DataCache
 
 
@@ -14,13 +16,12 @@ class DataCacheDao:
         """
         return DataCache.select()
 
-    def insert(self, dataCache) -> None:
+    def insert(self, dataCache) -> int:
         """
         插入一条数据
         :param dataCache: 数据
         """
-        DataCache.create(task_code=dataCache.task_code, api_code=dataCache.api_codel,
-                         crawling_rule_code=dataCache.crawling_rule_code, data=dataCache.data)
+        return DataCache.insert(api_code=dataCache.api_code, data=dataCache.data).execute()
 
     def delete(self, code_list) -> None:
         """
@@ -36,4 +37,10 @@ if __name__ == '__main__':
     for i in l:
         print(i.code, i.data, i.crawling_rule_code)
 
-    DataCacheDao().delete([1, 2])
+    ls = []
+    data = {}
+    data["name"] = "a"
+    data["age"] = 19
+    ls.append(data)
+
+    print(json.dumps(ls))

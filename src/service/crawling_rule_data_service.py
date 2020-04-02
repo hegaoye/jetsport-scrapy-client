@@ -37,3 +37,6 @@ class CrawlingRuleDataService(BaseService):
         return self.crawlingRuleDataDao.list_by_pre_id(pre_id)
     def list_pre_id(self, parameter_code_list) -> list:
         return self.crawlingRuleDataDao.list_pre_id(parameter_code_list)
+
+    def delete_list(self, ids):
+         self.crawlingRuleDataDao.delete_list(ids)
