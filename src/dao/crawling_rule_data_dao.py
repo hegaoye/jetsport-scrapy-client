@@ -42,8 +42,14 @@ class CrawlingRuleDataDao(Singleton):
         return CrawlingRuleData.select().where(CrawlingRuleData.parameter_code == parameter_code).execute()
 
     def list_pre_id(self, parameter_code_list) -> list:
-        return CrawlingRuleData.select(CrawlingRuleData.pre_id).where(
+        list = CrawlingRuleData.select(CrawlingRuleData.pre_id).where(
             CrawlingRuleData.parameter_code.in_(parameter_code_list)).group_by(CrawlingRuleData.pre_id)
+        pre_id_list = []
+        if list and len(list) > 0:
+            for crawlingRuleData in list:
+                pre_id_list.append(crawlingRuleData.pre_id)
+
+        return pre_id_list
 
     def list_by_pre_id(self, pre_id) -> list:
         return CrawlingRuleData.select().where(CrawlingRuleData.pre_id == pre_id).execute()

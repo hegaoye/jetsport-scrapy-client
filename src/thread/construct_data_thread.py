@@ -65,14 +65,15 @@ class ConstructDataThread(BaseTread):
                     parameter_data = {}
                     for crawlingRuleData in crawling_rule_data_list:
                         parameter_data[crawlingRuleData.parameter_name] = crawlingRuleData.value
-                        api_parameter_list.append(parameter_data)
                         id_list.append(crawlingRuleData.id)
+
+                    api_parameter_list.append(parameter_data)
 
                 # 5. 存储构造的数据到datacache中
                 self.__data_cache(api.code, api_parameter_list)
 
                 # 6.删除已经被构造的数据
-                self.crawlingRuleDataService.delete_list(id_list)
+                # self.crawlingRuleDataService.delete_list(id_list)
 
     def __data_cache(self, api_code, api_parameter_list):
         """
