@@ -33,7 +33,7 @@ class CrawlingRuleDataDao(Singleton):
         return CrawlingRuleData.select().where(CrawlingRuleData.crawling_rule_code == crawling_rule_code).execute()
 
     def load_by_value(self, value) -> CrawlingRuleData:
-        list = CrawlingRuleData.select().where(CrawlingRuleData.value == value).execute()
+        list = CrawlingRuleData.select().where(CrawlingRuleData.value == value)
         if list and len(list) > 0:
             return list.get()
         return None
@@ -62,5 +62,7 @@ class CrawlingRuleDataDao(Singleton):
 
 if __name__ == '__main__':
     a = CrawlingRuleDataDao()
-    l = a.list_pre_id(['9'])
-    print(l[0])
+    # l = a.list_pre_id(['9'])
+    # print(l[0])
+    c = a.load_by_value('俄罗斯')
+    print(c.value)
