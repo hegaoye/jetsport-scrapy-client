@@ -1,7 +1,9 @@
 # coding=utf-8
 import json
+import threading
 
 from src.base.enum.y_n_enum import YNEnum
+from src.base.log4py import logger
 from src.entity.data_cache import DataCache
 from src.service.api_serivce import ApiService
 from src.service.crawling_rule_data_service import CrawlingRuleDataService
@@ -16,7 +18,8 @@ class ConstructDataThread(BaseTread):
     构造用于推送的数据，保持单例模式，禁止多线程跑多个实例导致指令执行的混乱
     """
 
-    def __init__(self, crawlingRule):
+    def __init__(self, crawlingRule=None):
+        threading.Thread.__init__(self)
         self.crawlingRule = crawlingRule
         self.apiService = ApiService()
         self.crawlingRuleService = CrawlingRuleService()
@@ -25,9 +28,12 @@ class ConstructDataThread(BaseTread):
         self.dataCacheService = DataCacheService()
 
     def run(self) -> None:
-        pass
+        try:
+            self.__build_data()
+        except Exception as e:
+            logger.error(e)
 
-    def build_data(self):
+    def __build_data(self):
         """
         构造接口数据
         1.查询接口列表
@@ -46,18 +52,21 @@ class ConstructDataThread(BaseTread):
                 api_parameter_list = []
                 id_list = []
                 parameter_code_list = self.parameterService.list_code(api.code, YNEnum.Y.name)
-                pre_id_list = self.crawlingRuleDataService.list_pre_id(parameter_code_list)
-                if pre_id_list and len(pre_id_list) > 0:
-                    for pre_id in pre_id_list:
-                        # 3.查询参数数据
-                        crawling_rule_data_list = self.crawlingRuleDataService.list_by_pre_id(pre_id)
 
-                        # 4.构造结构
-                        parameter_data = {}
-                        for crawlingRuleData in crawling_rule_data_list:
-                            parameter_data[crawlingRuleData.parameter_name] = crawlingRuleData.value
-                            api_parameter_list.append(parameter_data)
-                            id_list.append(crawlingRuleData.id)
+                pre_id_list = self.crawlingRuleDataService.list_pre_id(parameter_code_list)
+                if not pre_id_list:
+                    continue
+
+                for pre_id in pre_id_list:
+                    # 3.查询参数数据
+                    crawling_rule_data_list = self.crawlingRuleDataService.list_by_pre_id(pre_id)
+
+                    # 4.构造结构
+                    parameter_data = {}
+                    for crawlingRuleData in crawling_rule_data_list:
+                        parameter_data[crawlingRuleData.parameter_name] = crawlingRuleData.value
+                        api_parameter_list.append(parameter_data)
+                        id_list.append(crawlingRuleData.id)
 
                 # 5. 存储构造的数据到datacache中
                 self.__data_cache(api.code, api_parameter_list)
@@ -79,8 +88,5 @@ class ConstructDataThread(BaseTread):
 
 
 if __name__ == '__main__':
-    data = {}
-    name = "a"
-    value = "b"
-    data[name] = value
-    print(data)
+    constructDataThread = ConstructDataThread()
+    constructDataThread.start()

@@ -193,7 +193,7 @@ class BugThread(BaseTread):
                 crawling_rule_data_load = self.crawlingRuleDataService.load_by_value(text)
                 if not crawling_rule_data_load:
                     parameter = self.parameterService.load(parameter_code)
-                    crawlingRuleData = self.crawlingRuleDataService.saveOrModify(parameter.code, crawling_rule_code,
+                    crawlingRuleData = self.crawlingRuleDataService.saveOrModify(crawling_rule_code, parameter.code,
                                                                                  parameter.name, text, pre_id)
 
                 sub_code = crawling_rule_data_load.code if crawling_rule_data_load else crawlingRuleData.code

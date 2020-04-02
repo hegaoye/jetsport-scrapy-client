@@ -20,4 +20,5 @@ class ParameterDao(Singleton):
         Parameter.create(code=parameter.code, api_code=parameter.api_code, name=parameter.name, type=parameter.type)
 
     def list_code(self, api_code, is_root) -> list:
-        return Parameter.select(Parameter.code).where(Parameter.api_code == api_code, Parameter.is_root == is_root)
+        return Parameter.select(Parameter.code).where(Parameter.api_code == api_code,
+                                                      Parameter.is_root == is_root)
