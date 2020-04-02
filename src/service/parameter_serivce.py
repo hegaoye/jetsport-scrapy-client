@@ -13,3 +13,6 @@ class ParameterService(BaseService):
 
     def list(self, api_code, is_root) -> list:
         return self.parameterDao.list(api_code, is_root)
+
+    def list_code(self, api_code, is_root) -> list:
+        return self.parameterDao.list_code(api_code, is_root)

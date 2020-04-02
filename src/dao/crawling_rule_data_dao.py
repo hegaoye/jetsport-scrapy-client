@@ -40,3 +40,10 @@ class CrawlingRuleDataDao(Singleton):
 
     def list_by_parameter_code(self, parameter_code) -> list:
         return CrawlingRuleData.select().where(CrawlingRuleData.parameter_code == parameter_code)
+
+    def list_pre_id(self, parameter_code_list) -> list:
+        return CrawlingRuleData.select(CrawlingRuleData.pre_id).where(
+            CrawlingRuleData.parameter_code in parameter_code_list)
+
+    def list_by_pre_id(self, pre_id) -> list:
+        return CrawlingRuleData.select().where(CrawlingRuleData.pre_id == pre_id)

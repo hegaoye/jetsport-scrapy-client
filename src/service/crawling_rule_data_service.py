@@ -33,3 +33,7 @@ class CrawlingRuleDataService(BaseService):
 
     def list_by_parameter_code(self, parameter_code) -> list:
         return self.crawlingRuleDataDao.list_by_parameter_code(parameter_code)
+    def list_by_pre_id(self,pre_id)->list:
+        return self.crawlingRuleDataDao.list_by_pre_id(pre_id)
+    def list_pre_id(self, parameter_code_list) -> list:
+        return self.crawlingRuleDataDao.list_pre_id(parameter_code_list)

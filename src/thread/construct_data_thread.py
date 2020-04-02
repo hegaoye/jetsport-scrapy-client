@@ -37,19 +37,17 @@ class ConstructDataThread(BaseTread):
         if api_list and len(api_list) > 0:
             for api in api_list:
                 api_parameter_list = []
-                parameter_list = self.parameterService.list(api.code, YNEnum.Y.name)
-                if parameter_list and len(parameter_list) > 0:
-                    parameter_data = {}
-                    for parameter in parameter_list:
-
+                parameter_code_list = self.parameterService.list_code(api.code, YNEnum.Y.name)
+                pre_id_list = self.crawlingRuleDataService.list_pre_id(parameter_code_list)
+                if pre_id_list and len(pre_id_list) > 0:
+                    for pre_id in pre_id_list:
                         # 3.查询参数数据
-                        crawling_rule_data_list = self.crawlingRuleDataService.list_by_parameter_code(parameter.code)
-                        if crawling_rule_data_list and len(crawling_rule_data_list) > 0:
-
-                            # 4.构造结构
-                            for crawlingRuleData in crawling_rule_data_list:
-                                parameter_data[parameter.name] = crawlingRuleData.value
-                                api_parameter_list.append(parameter_data)
+                        crawling_rule_data_list = self.crawlingRuleDataService.list_by_pre_id(pre_id)
+                        # 4.构造结构
+                        parameter_data = {}
+                        for crawlingRuleData in crawling_rule_data_list:
+                            parameter_data[crawlingRuleData.parameter_name] = crawlingRuleData.value
+                            api_parameter_list.append(parameter_data)
 
 
 if __name__ == '__main__':
