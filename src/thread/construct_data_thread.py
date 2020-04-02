@@ -34,6 +34,8 @@ class ConstructDataThread(BaseTread):
         2.查询参数列表
         3.查询参数数据
         4.构造结构
+        5.存储构造的数据到datacache中
+        6.删除已经被构造的数据
         """
         # 1.查询接口列表
         api_list = self.apiService.list()
@@ -49,6 +51,7 @@ class ConstructDataThread(BaseTread):
                     for pre_id in pre_id_list:
                         # 3.查询参数数据
                         crawling_rule_data_list = self.crawlingRuleDataService.list_by_pre_id(pre_id)
+
                         # 4.构造结构
                         parameter_data = {}
                         for crawlingRuleData in crawling_rule_data_list:
@@ -56,17 +59,23 @@ class ConstructDataThread(BaseTread):
                             api_parameter_list.append(parameter_data)
                             id_list.append(crawlingRuleData.id)
 
-                # 存储到 datacache中
-                dataCache = DataCache()
-                dataCache.api_code = api.code
-                dataCache.data = json.dumps(api_parameter_list)
-                self.dataCacheService.save(dataCache)
+                # 5. 存储构造的数据到datacache中
+                self.__data_cache(api.code, api_parameter_list)
 
-                # 删除构造的数据
+                # 6.删除已经被构造的数据
                 self.crawlingRuleDataService.delete_list(id_list)
-                # 清空
-                api_parameter_list.clear()
-                id_list.clear()
+
+    def __data_cache(self, api_code, api_parameter_list):
+        """
+        缓存 数据
+        :param api_code: 接口编码
+        :param api_parameter_list: 数据集合
+        :return:
+        """
+        dataCache = DataCache()
+        dataCache.api_code = api_code
+        dataCache.data = json.dumps(api_parameter_list)
+        self.dataCacheService.save(dataCache)
 
 
 if __name__ == '__main__':

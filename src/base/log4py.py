@@ -1,11 +1,13 @@
 # coding=utf-8
 __author__ = 'leo.he'
+
 import logging
+
+from settings import LOGGIN_FILE
 
 logger = logging.getLogger()
 
-logfile = 'app.log'
-fh = logging.FileHandler(logfile)
+fh = logging.FileHandler(LOGGIN_FILE)
 fh.setLevel(logging.DEBUG)
 
 ch = logging.StreamHandler()
