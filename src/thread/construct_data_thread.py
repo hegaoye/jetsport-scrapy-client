@@ -52,23 +52,13 @@ class ConstructDataThread(BaseTread):
                 api_parameter_list = []
                 id_list = []
                 parameter_code_list = self.parameterService.list_code(api.code, YNEnum.Y.name)
-
                 pre_id_list = self.crawlingRuleDataService.list_pre_id(parameter_code_list)
                 if not pre_id_list:
                     continue
 
                 for pre_id in pre_id_list:
-                    print(str(pre_id))
-                    # 3.查询参数数据
-                    crawling_rule_data_list = self.crawlingRuleDataService.list_by_pre_id(pre_id)
-                    print(len(crawling_rule_data_list))
-
-                    # 4.构造结构
-                    parameter_data = {}
-                    for crawlingRuleData in crawling_rule_data_list:
-                        parameter_data[crawlingRuleData.parameter_name] = crawlingRuleData.value
-                        id_list.append(crawlingRuleData.id)
-
+                    ids, parameter_data = self.__param(pre_id)
+                    id_list = id_list + ids
                     api_parameter_list.append(parameter_data)
 
                 # 5. 存储构造的数据到datacache中
@@ -76,6 +66,22 @@ class ConstructDataThread(BaseTread):
 
                 # 6.删除已经被构造的数据 todo 暂时注释避免数据被删，调试好后，需要解开注释
                 # self.crawlingRuleDataService.delete_list(id_list)
+
+    def __param(self, pre_id):
+        print(str(pre_id))
+        id_list = []
+        # 3.查询参数数据
+        crawling_rule_data_list = self.crawlingRuleDataService.list_by_pre_id(pre_id)
+        print(len(crawling_rule_data_list))
+        # 4.构造结构
+        parameter_data = {}
+        for crawlingRuleData in crawling_rule_data_list:
+            parameter_data[crawlingRuleData.parameter_name] = crawlingRuleData.value
+            id_list.append(crawlingRuleData.id)
+            if YNEnum.N.name.__eq__(crawlingRuleData.is_root):
+                pass
+
+        return id_list, parameter_data
 
     def __data_cache(self, api_code, api_parameter_list):
         """
