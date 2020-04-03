@@ -111,7 +111,8 @@ class BugThread(BaseTread):
         elements = self.__element_list(element, xpath)
         if elements and len(elements) > 0:
             for sub_element in elements:
-                pre_id = str(uuid.uuid1()).replace("-", "")
+                if not pre_id:
+                    pre_id = str(uuid.uuid1()).replace("-", "")
                 self.__crawling_rule_list(crawling_rule_list, pre_id, sub_element)
 
     def __click(self, xpath, frequce, crawling_rule_list, pre_id, element):
