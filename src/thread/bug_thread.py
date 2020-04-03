@@ -1,4 +1,5 @@
 # coding=utf-8
+import json
 import threading
 import uuid
 from time import sleep
@@ -193,8 +194,8 @@ class BugThread(BaseTread):
                 crawling_rule_data_load = self.crawlingRuleDataService.load_by_value(text)
                 if not crawling_rule_data_load:
                     parameter = self.parameterService.load(parameter_code)
-                    crawlingRuleData = self.crawlingRuleDataService.saveOrModify(crawling_rule_code, parameter.code,
-                                                                                 parameter.name, text, pre_id)
+                    crawlingRuleData = self.crawlingRuleDataService.saveOrModify(crawling_rule_code, pre_id, text,
+                                                                                 parameter)
 
                 sub_code = crawling_rule_data_load.code if crawling_rule_data_load else crawlingRuleData.code
                 self.__crawling_rule_list(crawling_rule_list, sub_code, element)

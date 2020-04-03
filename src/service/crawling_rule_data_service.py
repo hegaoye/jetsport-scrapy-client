@@ -13,14 +13,19 @@ class CrawlingRuleDataService(BaseService):
     def load_by_value(self, value) -> CrawlingRuleData:
         return self.crawlingRuleDataDao.load_by_value(value)
 
-    def saveOrModify(self, code, parameter_code, parameter_name, data, pre_id) -> CrawlingRuleData:
+    def saveOrModify(self, code, pre_id, data, parameter) -> CrawlingRuleData:
         """
         保存更新
         :param crawlingRuleData: 对象
         """
         crawling_rule_data = CrawlingRuleData()
-        crawling_rule_data.parameter_code = parameter_code
-        crawling_rule_data.parameter_name = parameter_name
+        crawling_rule_data.pre_parameter_code = parameter.pre_code
+        crawling_rule_data.parameter_code = parameter.code
+        crawling_rule_data.api_code = parameter.api_code
+        crawling_rule_data.is_root = parameter.is_root
+        crawling_rule_data.parameter_type = parameter.parameter_type
+        crawling_rule_data.field_type = parameter.field_type
+        crawling_rule_data.parameter_name = parameter.name
         crawling_rule_data.crawling_rule_code = code
         crawling_rule_data.value = data
         if pre_id:

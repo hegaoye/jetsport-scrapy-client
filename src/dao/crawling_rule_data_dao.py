@@ -24,10 +24,17 @@ class CrawlingRuleDataDao(Singleton):
         return CrawlingRuleData.update(value=value).where(CrawlingRuleData.crawling_rule_code == crawling_rule_code)
 
     def insert(self, crawlingRuleData) -> int:
-        return CrawlingRuleData.insert(code=str(uuid.uuid1()).replace("-", ""), pre_id=crawlingRuleData.pre_id,
+        return CrawlingRuleData.insert(code=str(uuid.uuid1()).replace("-", ""),
+                                       pre_id=crawlingRuleData.pre_id,
                                        crawling_rule_code=crawlingRuleData.crawling_rule_code,
-                                       value=crawlingRuleData.value, parameter_name=crawlingRuleData.parameter_name,
-                                       parameter_code=crawlingRuleData.parameter_code).execute()
+                                       api_code=crawlingRuleData.api_code,
+                                       value=crawlingRuleData.value,
+                                       parameter_name=crawlingRuleData.parameter_name,
+                                       pre_parameter_code=crawlingRuleData.pre_parameter_code,
+                                       parameter_code=crawlingRuleData.parameter_code,
+                                       field_type=crawlingRuleData.field_type,
+                                       parameter_type=crawlingRuleData.parameter_type,
+                                       is_root=crawlingRuleData.is_root).execute()
 
     def list_by_code(self, crawling_rule_code) -> list:
         return CrawlingRuleData.select().where(CrawlingRuleData.crawling_rule_code == crawling_rule_code).execute()
