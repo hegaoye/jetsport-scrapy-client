@@ -57,7 +57,7 @@ class ConstructDataThread(BaseTread):
                     continue
 
                 for pre_id in pre_id_list:
-                    ids, parameter_data = self.__param(pre_id)
+                    ids, parameter_data = self.__build_param(pre_id)
                     id_list = id_list + ids
                     api_parameter_list.append(parameter_data)
 
@@ -67,7 +67,7 @@ class ConstructDataThread(BaseTread):
                 # 6.删除已经被构造的数据 todo 暂时注释避免数据被删，调试好后，需要解开注释
                 # self.crawlingRuleDataService.delete_list(id_list)
 
-    def __param(self, pre_id):
+    def __build_param(self, pre_id):
         print(str(pre_id))
         id_list = []
         # 3.查询参数数据
@@ -79,7 +79,7 @@ class ConstructDataThread(BaseTread):
             parameter_data[crawlingRuleData.parameter_name] = crawlingRuleData.value
             id_list.append(crawlingRuleData.id)
             if YNEnum.N.name.__eq__(crawlingRuleData.is_root):
-                pass
+                self.__build_param(crawlingRuleData.pre_id)
 
         return id_list, parameter_data
 
