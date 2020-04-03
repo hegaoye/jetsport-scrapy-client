@@ -95,9 +95,9 @@ class BugThread(BaseTread):
         if access_url and crawling_rule_list and len(crawling_rule_list) > 0:
             # 打开连接
             self.browser.get(access_url)
-
+            pre_id = str(uuid.uuid1()).replace("-", "")
             # 循环下级规则
-            self.__crawling_rule_list(crawling_rule_list)
+            self.__crawling_rule_list(crawling_rule_list, pre_id)
 
     def __element(self, xpath, crawling_rule_list, pre_id, element):
         """

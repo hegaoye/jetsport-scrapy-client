@@ -72,4 +72,6 @@ if __name__ == '__main__':
     # l = a.list_pre_id(['9'])
     # print(l[0])
     c = a.load_by_value('俄罗斯')
-    print(c.value)
+    ls = a.list_by_pre_id('24f9cd4f755b11eab79404d4c4ad10ee')
+    for crawlingRuleData in ls:
+        print(crawlingRuleData.id)
