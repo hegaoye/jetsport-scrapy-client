@@ -58,8 +58,10 @@ class ConstructDataThread(BaseTread):
                     continue
 
                 for pre_id in pre_id_list:
+                    print(str(pre_id))
                     # 3.查询参数数据
                     crawling_rule_data_list = self.crawlingRuleDataService.list_by_pre_id(pre_id)
+                    print(len(crawling_rule_data_list))
 
                     # 4.构造结构
                     parameter_data = {}
