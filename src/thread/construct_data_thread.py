@@ -5,6 +5,7 @@ import threading
 from src.base.enum.parameter_type_enum import ParameterTypeEnum
 from src.base.enum.y_n_enum import YNEnum
 from src.base.log4py import logger
+from src.base.singleton import Singleton
 from src.entity.data_cache import DataCache
 from src.service.api_serivce import ApiService
 from src.service.crawling_rule_data_service import CrawlingRuleDataService
@@ -14,7 +15,7 @@ from src.service.parameter_serivce import ParameterService
 from src.thread.base_thread import BaseTread
 
 
-class ConstructDataThread(BaseTread):
+class ConstructDataThread(BaseTread, Singleton):
     """
     构造用于推送的数据，保持单例模式，禁止多线程跑多个实例导致指令执行的混乱
     """
