@@ -15,6 +15,7 @@ from src.service.crawling_rule_service import CrawlingRuleService
 from src.service.data_cache_service import DataCacheService
 from src.service.parameter_serivce import ParameterService
 from src.thread.base_thread import BaseTread
+from src.thread.push_data_thread import PushDataThread
 
 
 class ConstructDataThread(BaseTread, Singleton):
@@ -36,7 +37,9 @@ class ConstructDataThread(BaseTread, Singleton):
         constructFrequce = int(self.settingService.load_value(SettingKeyEnum.ConstructFrequce))
         while True:
             try:
+                # 构造参数
                 self.__build_data()
+
             except Exception as e:
                 logger.error(e)
 
@@ -51,6 +54,7 @@ class ConstructDataThread(BaseTread, Singleton):
         4.构造结构
         5.存储构造的数据到datacache中
         6.删除已经被构造的数据
+        7. 推送数据异步处理
         """
         # 1.查询接口列表
         api_list = self.apiService.list()
@@ -75,6 +79,9 @@ class ConstructDataThread(BaseTread, Singleton):
 
                 # 6.删除已经被构造的数据 todo 暂时注释避免数据被删，调试好后，需要解开注释
                 # self.crawlingRuleDataService.delete_list(id_list)
+
+                # 7. 推送数据异步处理
+                PushDataThread().start()
 
     def __build_param(self, pre_id, parameter_data):
         print(str(pre_id))

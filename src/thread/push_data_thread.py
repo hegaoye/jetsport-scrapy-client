@@ -1,7 +1,5 @@
 # coding=utf-8
-from time import sleep
 
-from src.base.enum.setting_key_enum import SettingKeyEnum
 from src.service.data_cache_service import DataCacheService
 from src.thread.base_thread import BaseTread
 
@@ -15,10 +13,7 @@ class PushDataThread(BaseTread):
         self.dataCacheService = DataCacheService()
 
     def run(self) -> None:
-        push_data_cache_frequce = self.settingService.load_value(SettingKeyEnum.PushDataCacheFrequce.name)
-        while True:
-            self.__push()
-            sleep(push_data_cache_frequce)
+        self.__push()
 
     def __push(self) -> None:
         """
