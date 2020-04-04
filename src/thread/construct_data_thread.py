@@ -81,7 +81,7 @@ class ConstructDataThread(BaseTread, Singleton):
                 # self.crawlingRuleDataService.delete_list(id_list)
 
                 # 7. 推送数据异步处理
-                PushDataThread().start()
+                PushDataThread(api).start()
 
     def __build_param(self, pre_id, parameter_data):
         print(str(pre_id))

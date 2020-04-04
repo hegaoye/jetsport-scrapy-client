@@ -2,6 +2,7 @@ from src.base import http
 from src.dao.crawling_rule_dao import CrawlingRuleDao
 from src.dao.data_cache_dao import DataCacheDao
 from src.dao.task_pool_dao import TaskPoolDao
+from src.entity.data_cache import DataCache
 from src.service.base_service import BaseService
 
 
@@ -22,7 +23,17 @@ class DataCacheService(BaseService):
         """
         self.dataCacheDao.insert(dataCache)
 
-    def push(self) -> bool:
+    def load_by_api_code(self, api_code) -> DataCache:
+        return self.dataCacheDao.load_by_api_code(api_code)
+
+    def push(self, api) -> bool:
+        dataCache = self.dataCacheDao.load_by_api_code(api.code)
+        if not dataCache:
+            return False
+
+
+
+    def push_list(self) -> bool:
         """
         推送数据到服务端
         1.查询所有的数据集合

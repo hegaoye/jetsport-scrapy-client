@@ -31,6 +31,9 @@ class DataCacheDao:
         """
         DataCache.delete().where(DataCache.code in code_list).execute()
 
+    def load_by_api_code(self, api_code) -> DataCache:
+        return DataCache.get(DataCache.api_code == api_code)
+
 
 if __name__ == '__main__':
     l = DataCacheDao().list()
