@@ -48,3 +48,8 @@ class SettingKeyEnum(Enum):
     推送缓存数据的频率 单位 秒
     """
     PushDataCacheFrequce = "PushDataCacheFrequce"
+
+    """
+    构造参数的频率
+    """
+    ConstructFrequce = "ConstructFrequce"
