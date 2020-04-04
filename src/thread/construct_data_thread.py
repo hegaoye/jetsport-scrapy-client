@@ -80,16 +80,20 @@ class ConstructDataThread(BaseTread):
                 parameter_load = self.parameterService.load(crawlingRuleData.pre_parameter_code)
                 if parameter_load:
                     if ParameterTypeEnum.List.name.__eq__(parameter_load.parameter_type):
-                        name = parameter_load.name
+                        pre_param_name = parameter_load.name
                         sub_parameter_data_list = []
                         sub_parameter_data = {}
-                        sub_id_list, sub_parameter_data = self.__build_param(crawlingRuleData.code, sub_parameter_data)
+                        sub_parameter_data[crawlingRuleData.parameter_name] = crawlingRuleData.value
                         sub_parameter_data_list.append(sub_parameter_data)
-                        parameter_data[name] = sub_parameter_data_list if not parameter_data[name] else parameter_data[
-                                                                                                            name] + sub_parameter_data_list
-                        id_list = id_list + sub_id_list
+                        if pre_param_name in parameter_data.keys():
+                            parameter_data[pre_param_name] = parameter_data[pre_param_name] + sub_parameter_data_list
+                        else:
+                            parameter_data[pre_param_name] = sub_parameter_data_list
             else:
                 parameter_data[crawlingRuleData.parameter_name] = crawlingRuleData.value
+                sub_id_list, sub_parameter_data = self.__build_param(crawlingRuleData.code, parameter_data)
+                if id_list:
+                    id_list = id_list + sub_id_list
 
             id_list.append(crawlingRuleData.id)
 
