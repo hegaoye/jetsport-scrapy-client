@@ -31,7 +31,17 @@ class DataCacheService(BaseService):
         if not dataCache:
             return False
 
+        # 构造数据接口
+        data = {
+            "apiCode": dataCache.api_code,
+            "data": dataCache.data
+        }
 
+        # 推送数据
+        r = http.post(api.url, data)
+        if r.success:
+            # 3.精准删除已经推送的数据
+            self.dataCacheDao.delete_by_id(dataCache.id)
 
     def push_list(self) -> bool:
         """

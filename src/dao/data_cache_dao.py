@@ -31,6 +31,9 @@ class DataCacheDao:
         """
         DataCache.delete().where(DataCache.code in code_list).execute()
 
+    def delete_by_id(self, id) -> None:
+        DataCache.delete().where(DataCache.id == id).execute()
+
     def load_by_api_code(self, api_code) -> DataCache:
         return DataCache.get(DataCache.api_code == api_code)
 
