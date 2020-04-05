@@ -55,6 +55,7 @@ class ConstructDataThread(BaseTread, Singleton):
         5.存储构造的数据到datacache中
         6.删除已经被构造的数据
         7. 推送数据异步处理
+
         """
         # 1.查询接口列表
         api_list = self.apiService.list()
